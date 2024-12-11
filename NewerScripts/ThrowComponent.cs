@@ -22,23 +22,8 @@ public class ThrowComponent : NetworkBehaviour
 
     public void ClearHeldObject() 
     {
-        ClearHeldObjectServerRpc();
+        heldObject = null; 
     }
-    [Rpc(SendTo.Server)]
-    private void ClearHeldObjectServerRpc() 
-    {
-        ClearHeldObjectClientRpc();
-    }
-    [Rpc(SendTo.Everyone)]
-    private void ClearHeldObjectClientRpc() 
-    {
-        ClearHeldObjectAction();
-    }
-    private void ClearHeldObjectAction() 
-    {
-        heldObject = null;
-    }
-
     public bool IsHeldPosition()
     {
         if (!holdingPositionTransform)
@@ -96,13 +81,7 @@ public class ThrowComponent : NetworkBehaviour
         {
             Debug.Log($"current held obj: {heldObject.gameObject.name}, newPos: {holdingPositionTransform}, HoldSpeed: {holdSpeed}");
             Debug.Log($"slerp");
-
-
-
-            heldObject.transform.position = holdingPositionTransform.position;
-            heldObject.transform.rotation = holdingPositionTransform.rotation;
+            heldObject.transform.position = Vector3.Slerp(heldObject.transform.position, holdingPositionTransform.position, holdSpeed * Time.fixedDeltaTime);
         }
     }
-
-    
 }

@@ -36,7 +36,6 @@ public class PlayerNetworkMovement : MultiplayerActor
             {
                 ControlWalkingAnimation(false);
             }
-            ApplyGravity();
         }
         else if(IsClient && IsLocalPlayer)
         {
@@ -50,13 +49,13 @@ public class PlayerNetworkMovement : MultiplayerActor
                 ControlWalkingAnimationServerRpc(false);
             }
         }
+        ParseGravity();
     }
 
     [Rpc(SendTo.Server)]
     private void MovePlayerServerRpc(float targetAngle, float rotationAngle, float moveSpeed)
     {
         Move(targetAngle, rotationAngle, moveSpeed);
-        ApplyGravity();
     }
 
     private void Move(float targetAngle, float rotationAngle, float moveSpeed)
@@ -67,7 +66,6 @@ public class PlayerNetworkMovement : MultiplayerActor
         Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
         
         charController.Move(moveDir.normalized * (moveSpeed * Time.fixedDeltaTime));
-        ApplyGravity();
     }
 
     private float GetTargetAngle(Vector2 rawInput)
@@ -85,6 +83,24 @@ public class PlayerNetworkMovement : MultiplayerActor
         return Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity, _turnSmoothTime);
     }
 
+    private void ParseGravity()
+    {
+        if(IsClient && IsLocalPlayer)
+        {
+            GravityServerRpc();
+        }
+        else if(IsServer && IsLocalPlayer)
+        {
+            ApplyGravity();
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void GravityServerRpc()
+    {
+        ApplyGravity();
+    }
+
     private void ApplyGravity()
     {
         if(charController.isGrounded)
@@ -99,7 +115,6 @@ public class PlayerNetworkMovement : MultiplayerActor
     private void ControlWalkingAnimationServerRpc(bool ContinueAnim)
     {
         ControlWalkingAnimation(ContinueAnim);
-        Debug.Log(gameObject.name + " walking is " + ContinueAnim);
     }
 
     private void ControlWalkingAnimation(bool ContinueAnim)

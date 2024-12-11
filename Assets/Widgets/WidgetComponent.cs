@@ -5,7 +5,7 @@ public class WidgetComponent : MonoBehaviour
 {
     [SerializeField] private Widget widgetPrefab;
     [SerializeField] private Transform attachTransform;
-    private Camera _mainCamera;
+    [SerializeField] private Camera _mainCamera;
 
     private Widget _widget;
     private void Awake()
@@ -18,8 +18,6 @@ public class WidgetComponent : MonoBehaviour
         {
             _widget.transform.SetParent(canvas.transform);
         }
-
-        _mainCamera = Camera.main;
     }
 
     private void Update()

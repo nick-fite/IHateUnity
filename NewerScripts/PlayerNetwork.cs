@@ -51,12 +51,12 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     [SerializeField] private CinemachineCamera _VCam;
     [SerializeField] private AudioListener _listener; 
     
-        private int _swordHash;
-        private int _hookshotHash;
-        private int _holdingHash;
-        private int _attackHash;
-        private int _throwHash;
-        private int _pickUpHash;
+    
+
+    /*public void SetPlayerVelocity(Vector3 velocityToSet) 
+    {   
+        _playerVelocity = velocityToSet;
+    }*/
 
     private void Awake()
     {
@@ -74,12 +74,6 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     
     public void Start()
     {
-        _swordHash = Animator.StringToHash("sword");
-        _hookshotHash = Animator.StringToHash("hookshot");
-        _holdingHash = Animator.StringToHash("holding");
-        _attackHash = Animator.StringToHash("attack");
-        _throwHash = Animator.StringToHash("throw");
-        _pickUpHash = Animator.StringToHash("pickUp");
         foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
         {
             GameObject otherPlayer = client.PlayerObject.gameObject;
@@ -100,7 +94,6 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         { 
             _multiplayerInputAction.Disable();
         }
-        GetComponent<HealthComponent>().OnDead += ResetPlayerParse;
         StartCoroutine(DelayThenMove());
     }
     private void Update()
@@ -221,41 +214,23 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         if (context.started && _damageComponent)
         {
             _damageComponent.DoDamage();
-            _animator.SetTrigger(_attackHash);
         }
     }
     public void InteractAction(InputAction.CallbackContext context)
     {
         if (!IsLocalPlayer) { return; }
 
-
         if (context.started)
         {
             TryInteract();
         }
     }
-
-    [Rpc(SendTo.Server)]
-    private void TryInteractServerRpc()
-    {
-        TryInteract();
-    }
-
-    [Rpc(SendTo.Everyone)]
-    private void TryInteractEveryoneRpc()
-    {
-        TryInteract();
-    }
-
     private void TryInteract() 
     {
-        _animator.SetTrigger(_pickUpHash);
         if (_targetInteractible != null)//we can change this later if we need to
         {
             _targetInteractible.InteractAction(this.gameObject);
             _targetInteractible = null;
-            _animator.SetTrigger(_throwHash);
-            ResetAllAnimationServerRpc();
             return;
         }
 
@@ -266,79 +241,11 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
             if (hitInteractionInterface != null && hitInteractionInterface.ShouldInteract(this.gameObject))
             {
                 _targetInteractible = hitInteractionInterface;
-                GameObject gameObj = hitCollider.gameObject;
-                gameObj.GetComponent<Collider>().isTrigger = true;
-                gameObj.GetComponent<Rigidbody>().isKinematic = true;
-                if(IsClient && IsLocalPlayer)
-                {
-                    SetNewAnimationServerRpc(gameObj.GetComponent<Item>().newAnimSet);
-                }
-                else if (IsServer && IsLocalPlayer)
-                {
-                    SetNewAnimation(gameObj.GetComponent<Item>().newAnimSet);
-                }
-
                 hitInteractionInterface.InteractAction(this.gameObject);
                 return;
-                
             }
         }
         _targetInteractible = null;///If nothing is interactible, clear just in case
-    }
-
-    private void ResetPlayerParse()
-    {
-        if(IsClient && IsLocalPlayer)
-        {
-            ResetPlayerRpc(); 
-
-        }
-        else if (IsServer && IsLocalPlayer)
-        {
-            ResetPlayer();
-
-        }
-        TryInteract();
-        StartCoroutine(DelayThenMove());
-    }
-
-    [Rpc(SendTo.Server)]
-    private void ResetPlayerRpc()
-    {
-        Debug.LogWarning("SPAWNING");
-        ResetPlayer();
-
-    }
-
-    private void ResetPlayer()
-    {
-        _characterController.transform.position = Vector3.zero;
-        GetComponent<HealthComponent>().ChangeHealth(100);
-    }
-
-    [Rpc(SendTo.Server)]
-    private void ResetAllAnimationServerRpc()
-    {
-        ResetAllAnimation();
-    }
-
-    private void ResetAllAnimation()
-    {
-        _animator.SetBool(_hookshotHash, false);
-        _animator.SetBool(_swordHash, false);
-        _animator.SetBool(_holdingHash, false);
-    }
-
-    [Rpc(SendTo.Server)]
-    private void SetNewAnimationServerRpc(string newAnim)
-    {
-        SetNewAnimation(newAnim);
-    }
-
-    private void SetNewAnimation(string newAnim)
-    {
-        ResetAllAnimation();
-        _animator.SetBool(newAnim, true);
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -352,4 +259,3 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         Gizmos.DrawWireSphere(interactOrigin.position, interactRadius);
     }
 }
-

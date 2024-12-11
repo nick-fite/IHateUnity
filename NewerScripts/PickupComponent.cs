@@ -14,7 +14,6 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
     Rigidbody _rigidBody;
     LaunchComponent _launchComponent;
     private bool _bIsPickedUp;
-    private Collider _col;
 
     private void Start()
     {
@@ -23,7 +22,6 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
         _characterController = GetComponent<CharacterController>();
         _launchComponent = GetComponent<LaunchComponent>();
         _rigidBody = GetComponent<Rigidbody>();
-        _col = GetComponent<Collider>();
     }
     public bool ShouldInteract(GameObject interactor)
     {
@@ -82,13 +80,10 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
         throwComp.ClearHeldObject();
         ToggleRigidBodyServerRpc();
         SetPickUpPlayerMoveability(true);
-        if (_launchComponent && throwComp.IsLocalPlayer)
+        if (_launchComponent)
         {
-            _rigidBody.isKinematic = false;
-            _col.isTrigger = false;
             PlayerNetwork player = throwComp.GetComponent<PlayerNetwork>();
-
-            Vector3 throwDir = player.GetPlayerForward() + player.GetPlayerUp();
+            Vector3 throwDir = player.GetPlayerUp() + player.GetPlayerForward();
             Debug.Log("launch in pickup");
             _launchComponent.CheckLaunch(throwDir, throwComp.GetThrowVelocity(), throwComp);
         }
