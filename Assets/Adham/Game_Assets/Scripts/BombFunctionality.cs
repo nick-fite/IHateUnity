@@ -18,6 +18,7 @@ public class BombFunctionality : DamageComponent
     }
     private void OnTriggerEnter(Collider other)
     {
+        Debug.LogWarning("Exploding");
         if (!isExploding && other.GetComponent<HealthComponent>() != null)
         {
             Debug.Log($"{other.gameObject.name} touched the bomb, starting countdown!");
