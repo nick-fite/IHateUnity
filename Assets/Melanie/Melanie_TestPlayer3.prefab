@@ -530,8 +530,6 @@ GameObject:
   - component: {fileID: 6891515264915924100}
   - component: {fileID: 4599945409292567513}
   - component: {fileID: 8433777069384896188}
-  - component: {fileID: 2148855618496618864}
-  - component: {fileID: 8727120142565176368}
   m_Layer: 0
   m_Name: Melanie_TestPlayer3
   m_TagString: Untagged
@@ -630,7 +628,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+<<<<<<< HEAD
   charController: {fileID: 4743708031327793318}
+=======
+  charController: {fileID: 0}
+>>>>>>> f3d7c7153387e1222a46b5882708ecfc72d9782d
   _playerObj: {fileID: 803167828191313357}
   moveSpeed: 3
   turnSpeed: 2
@@ -707,7 +709,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+<<<<<<< HEAD
   holdingPositionTransform: {fileID: 5537645831723588186}
+=======
+  holdingPositionTransform: {fileID: 7157019367758677870}
+>>>>>>> f3d7c7153387e1222a46b5882708ecfc72d9782d
   holdSpeed: 5
   throwVelocity: 4
 --- !u!114 &1201938760374456856
@@ -839,6 +845,7 @@ MonoBehaviour:
   UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
+<<<<<<< HEAD
 --- !u!114 &2148855618496618864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -935,6 +942,8 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+=======
+>>>>>>> f3d7c7153387e1222a46b5882708ecfc72d9782d
 --- !u!1 &7855020869756278628
 GameObject:
   m_ObjectHideFlags: 0
