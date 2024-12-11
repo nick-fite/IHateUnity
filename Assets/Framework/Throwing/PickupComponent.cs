@@ -62,7 +62,7 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
                 _col.isTrigger = false;
                 Vector3 throwDir = throwComp.gameObject.transform.forward + throwComp.gameObject.transform.up;
                 Debug.Log("launch in pickup");
-                _launchComponent.LaunchServerRpc(throwDir, 4f/*, throwComp.gameObject*/);
+                _launchComponent.CheckLaunch(throwDir, 4f, throwComp);
             }
         }
     }

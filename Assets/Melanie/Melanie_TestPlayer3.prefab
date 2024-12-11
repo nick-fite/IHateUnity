@@ -29,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1285460984628804661}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40466064, y: -0.2442808, z: 0.11310851, w: 0.8739469}
-  m_LocalPosition: {x: 1.7130492, y: 4.561714, z: -3.0352132}
+  m_LocalRotation: {x: 0.023144972, y: 0.9214755, z: -0.3837425, w: 0.05557769}
+  m_LocalPosition: {x: -0.41526785, y: 4.22375, z: 3.2662265}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -113,7 +113,7 @@ MonoBehaviour:
     SplineCurvature: 0.5
   RecenteringTarget: 2
   HorizontalAxis:
-    Value: -31.232891
+    Value: 173.09691
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -123,7 +123,7 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 30.680628
+    Value: 27.872494
     Center: 17.5
     Range: {x: -10, y: 45}
     Wrap: 0
@@ -304,8 +304,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4275610020041591817}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40466064, y: -0.2442808, z: 0.11310851, w: 0.8739469}
-  m_LocalPosition: {x: 1.7130492, y: 4.561714, z: -3.0352132}
+  m_LocalRotation: {x: 0.023144972, y: 0.9214755, z: -0.3837425, w: 0.05557769}
+  m_LocalPosition: {x: -0.41526785, y: 4.22375, z: 3.2662265}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -630,16 +630,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  charController: {fileID: 0}
-  _playerObj: {fileID: 0}
+  charController: {fileID: 4743708031327793318}
+  _playerObj: {fileID: 803167828191313357}
   moveSpeed: 3
   turnSpeed: 2
-  playerNetworkMovement: {fileID: 0}
+  playerNetworkMovement: {fileID: 684129827861290299}
   attackRadius: 1
   interactRadius: 1
-  interactOrigin: {fileID: 0}
-  _VCam: {fileID: 0}
-  _listener: {fileID: 0}
+  interactOrigin: {fileID: 7157019367758677870}
+  _VCam: {fileID: 3768624964401596184}
+  _listener: {fileID: 2316586491175113226}
 --- !u!54 &2189371062612846002
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -707,7 +707,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  holdingPositionTransform: {fileID: 0}
+  holdingPositionTransform: {fileID: 5537645831723588186}
   holdSpeed: 5
   throwVelocity: 4
 --- !u!114 &1201938760374456856
@@ -852,8 +852,64 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList: []
-  m_Animator: {fileID: 0}
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -1569906739
+    DestinationState: -736486049
+    TransitionDuration: 0.25
+    TriggerNameHash: -736486049
+    TransitionIndex: 3
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -2092501173
+    DestinationState: -1958586048
+    TransitionDuration: 0.25
+    TriggerNameHash: 1203776827
+    TransitionIndex: 2
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -2092501173
+    DestinationState: -1907200461
+    TransitionDuration: 0.25
+    TriggerNameHash: 1335050551
+    TransitionIndex: 3
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -825585489
+    DestinationState: -1958586048
+    TransitionDuration: 0.25
+    TriggerNameHash: 1203776827
+    TransitionIndex: 1
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -825585489
+    DestinationState: -1907200461
+    TransitionDuration: 0.25
+    TriggerNameHash: 1335050551
+    TransitionIndex: 2
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 1515803813
+    DestinationState: -1907200461
+    TransitionDuration: 0.25
+    TriggerNameHash: 1335050551
+    TransitionIndex: 2
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -1028202203
+    DestinationState: -1907200461
+    TransitionDuration: 0.25
+    TriggerNameHash: 1335050551
+    TransitionIndex: 1
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 533335303
+    DestinationState: -1907200461
+    TransitionDuration: 0.25
+    TriggerNameHash: 1335050551
+    TransitionIndex: 1
+  m_Animator: {fileID: 6237081527093624077}
 --- !u!143 &8727120142565176368
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1197,49 +1253,49 @@ MonoBehaviour:
     OriginatingState: -2092501173
     DestinationState: -1958586048
     TransitionDuration: 0.25
-    TriggerNameHash: -1004578160
+    TriggerNameHash: 1203776827
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -2092501173
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
+    TriggerNameHash: 1335050551
     TransitionIndex: 3
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -825585489
     DestinationState: -1958586048
     TransitionDuration: 0.25
-    TriggerNameHash: -1004578160
+    TriggerNameHash: 1203776827
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -825585489
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
+    TriggerNameHash: 1335050551
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 1515803813
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
+    TriggerNameHash: 1335050551
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1028202203
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
+    TriggerNameHash: 1335050551
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 533335303
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
+    TriggerNameHash: 1335050551
     TransitionIndex: 1
   m_Animator: {fileID: 6237081527093624077}
 --- !u!4 &2184714184573042516 stripped

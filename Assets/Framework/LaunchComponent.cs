@@ -29,7 +29,7 @@ public class LaunchComponent : NetworkBehaviour
         }
     }
     [Rpc(SendTo.Server)]
-    private void LaunchServerRpc(Vector3 finalVelocity) 
+    public void LaunchServerRpc(Vector3 finalVelocity) 
     {
         LaunchClientRpc(finalVelocity);
     }
