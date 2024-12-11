@@ -81,7 +81,7 @@ public class ThrowComponent : NetworkBehaviour
         {
             Debug.Log($"current held obj: {heldObject.gameObject.name}, newPos: {holdingPositionTransform}, HoldSpeed: {holdSpeed}");
             Debug.Log($"slerp");
-            heldObject.transform.position = Vector3.Slerp(heldObject.transform.position, holdingPositionTransform.position, holdSpeed * Time.fixedDeltaTime);
+            heldObject.transform.position = holdingPositionTransform.position;
         }
     }
 }
