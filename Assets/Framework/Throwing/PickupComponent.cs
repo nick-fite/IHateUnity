@@ -64,11 +64,7 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
 
                 Vector3 throwDir = player.GetPlayerForward() + player.GetPlayerUp();
                 Debug.Log("launch in pickup");
-<<<<<<< HEAD
-                _launchComponent.CheckLaunch(throwDir, 4f, throwComp);
-=======
                 _launchComponent.CheckLaunch(throwDir, throwComp.GetThrowVelocity(), throwComp);
->>>>>>> f3d7c7153387e1222a46b5882708ecfc72d9782d
             }
         }
     }
