@@ -29,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1285460984628804661}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.023144972, y: 0.9214755, z: -0.3837425, w: 0.05557769}
-  m_LocalPosition: {x: -0.41526785, y: 4.22375, z: 3.2662265}
+  m_LocalRotation: {x: 0.40466064, y: -0.2442808, z: 0.11310851, w: 0.8739469}
+  m_LocalPosition: {x: 1.7130492, y: 4.561714, z: -3.0352132}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -113,7 +113,7 @@ MonoBehaviour:
     SplineCurvature: 0.5
   RecenteringTarget: 2
   HorizontalAxis:
-    Value: 173.09691
+    Value: -31.232891
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -123,7 +123,7 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 27.872494
+    Value: 30.680628
     Center: 17.5
     Range: {x: -10, y: 45}
     Wrap: 0
@@ -304,8 +304,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4275610020041591817}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.023144972, y: 0.9214755, z: -0.3837425, w: 0.05557769}
-  m_LocalPosition: {x: -0.41526785, y: 4.22375, z: 3.2662265}
+  m_LocalRotation: {x: 0.40466064, y: -0.2442808, z: 0.11310851, w: 0.8739469}
+  m_LocalPosition: {x: 1.7130492, y: 4.561714, z: -3.0352132}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -628,11 +628,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-<<<<<<< HEAD
-  charController: {fileID: 4743708031327793318}
-=======
   charController: {fileID: 0}
->>>>>>> f3d7c7153387e1222a46b5882708ecfc72d9782d
   _playerObj: {fileID: 803167828191313357}
   moveSpeed: 3
   turnSpeed: 2
@@ -709,11 +705,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-<<<<<<< HEAD
-  holdingPositionTransform: {fileID: 5537645831723588186}
-=======
   holdingPositionTransform: {fileID: 7157019367758677870}
->>>>>>> f3d7c7153387e1222a46b5882708ecfc72d9782d
   holdSpeed: 5
   throwVelocity: 4
 --- !u!114 &1201938760374456856
@@ -845,105 +837,6 @@ MonoBehaviour:
   UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
-<<<<<<< HEAD
---- !u!114 &2148855618496618864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7400536117542311752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -1569906739
-    DestinationState: -736486049
-    TransitionDuration: 0.25
-    TriggerNameHash: -736486049
-    TransitionIndex: 3
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -2092501173
-    DestinationState: -1958586048
-    TransitionDuration: 0.25
-    TriggerNameHash: 1203776827
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -2092501173
-    DestinationState: -1907200461
-    TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
-    TransitionIndex: 3
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -825585489
-    DestinationState: -1958586048
-    TransitionDuration: 0.25
-    TriggerNameHash: 1203776827
-    TransitionIndex: 1
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -825585489
-    DestinationState: -1907200461
-    TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 1515803813
-    DestinationState: -1907200461
-    TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
-    TransitionIndex: 2
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -1028202203
-    DestinationState: -1907200461
-    TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
-    TransitionIndex: 1
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 533335303
-    DestinationState: -1907200461
-    TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
-    TransitionIndex: 1
-  m_Animator: {fileID: 6237081527093624077}
---- !u!143 &8727120142565176368
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7400536117542311752}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
-=======
->>>>>>> f3d7c7153387e1222a46b5882708ecfc72d9782d
 --- !u!1 &7855020869756278628
 GameObject:
   m_ObjectHideFlags: 0
@@ -1262,49 +1155,49 @@ MonoBehaviour:
     OriginatingState: -2092501173
     DestinationState: -1958586048
     TransitionDuration: 0.25
-    TriggerNameHash: 1203776827
+    TriggerNameHash: -1004578160
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -2092501173
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
+    TriggerNameHash: -1907200461
     TransitionIndex: 3
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -825585489
     DestinationState: -1958586048
     TransitionDuration: 0.25
-    TriggerNameHash: 1203776827
+    TriggerNameHash: -1004578160
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -825585489
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
+    TriggerNameHash: -1907200461
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 1515803813
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
+    TriggerNameHash: -1907200461
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1028202203
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
+    TriggerNameHash: -1907200461
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 533335303
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: 1335050551
+    TriggerNameHash: -1907200461
     TransitionIndex: 1
   m_Animator: {fileID: 6237081527093624077}
 --- !u!4 &2184714184573042516 stripped
