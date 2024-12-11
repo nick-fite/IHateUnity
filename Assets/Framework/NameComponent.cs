@@ -32,9 +32,11 @@ public class NameComponent : NetworkBehaviour, INetworkSerializable
 
     private NetworkString _playerName;
 
-    private void Start()
+    private void Awake()
     {
         OnNameChanged += ChangeName;
+
+        ChangeName(_playerName.ToString());
     }
     public void RefreshName() 
     {

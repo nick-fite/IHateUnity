@@ -1,14 +1,17 @@
+using NUnit.Framework.Internal.Filters;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NetworkManagerUI : MonoBehaviour, INetworkSerializable
+public class NetworkManagerUI : NetworkBehaviour, INetworkSerializable
 {
+    [SerializeField] private GameObject menu;
     [SerializeField] private Button serverBtn;
     [SerializeField] private Button hostBtn;
     [SerializeField] private Button clientBtn;
 
-    string _playerName;
+    string _playerName = "Player Name";
     private void Awake()
     {
         serverBtn.onClick.AddListener(() => {
@@ -20,6 +23,22 @@ public class NetworkManagerUI : MonoBehaviour, INetworkSerializable
         clientBtn.onClick.AddListener(() => {
             NetworkManager.Singleton.StartClient();
         });
+
+        NetworkManager.OnClientStarted += SetCurrentPlayerName;
+    }
+
+    public void SetCurrentPlayerName()
+    {
+        Debug.Log($"PlayerName: {_playerName}");
+        NameChanged(_playerName);
+        HideMenu();
+    }
+    private void HideMenu() 
+    {
+        if (menu)
+        { 
+            menu.SetActive(false);
+        }
     }
     public void NameChanged(string newName)
     {
