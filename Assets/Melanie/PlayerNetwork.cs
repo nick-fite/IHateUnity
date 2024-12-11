@@ -227,11 +227,25 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     {
         if (!IsLocalPlayer) { return; }
 
+
         if (context.started)
         {
             TryInteract();
         }
     }
+
+    [Rpc(SendTo.Server)]
+    private void TryInteractServerRpc()
+    {
+        TryInteract();
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void TryInteractEveryoneRpc()
+    {
+        TryInteract();
+    }
+
     private void TryInteract() 
     {
         _animator.SetTrigger(_pickUpHash);
@@ -240,7 +254,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
             _targetInteractible.InteractAction(this.gameObject);
             _targetInteractible = null;
             _animator.SetTrigger(_throwHash);
-            ResetAllAnimation();
+            ResetAllAnimationServerRpc();
             return;
         }
 
@@ -254,7 +268,14 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
                 GameObject gameObj = hitCollider.gameObject;
                 gameObj.GetComponent<Collider>().isTrigger = true;
                 gameObj.GetComponent<Rigidbody>().isKinematic = true;
-                SetNewAnimation(gameObj.GetComponent<Item>().newAnimSet);
+                if(IsClient && IsLocalPlayer)
+                {
+                    SetNewAnimationServerRpc(gameObj.GetComponent<Item>().newAnimSet);
+                }
+                else if (IsServer && IsLocalPlayer)
+                {
+                    SetNewAnimation(gameObj.GetComponent<Item>().newAnimSet);
+                }
 
                 hitInteractionInterface.InteractAction(this.gameObject);
                 return;
@@ -264,11 +285,23 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         _targetInteractible = null;///If nothing is interactible, clear just in case
     }
 
+    [Rpc(SendTo.Server)]
+    private void ResetAllAnimationServerRpc()
+    {
+        ResetAllAnimation();
+    }
+
     private void ResetAllAnimation()
     {
         _animator.SetBool(_hookshotHash, false);
         _animator.SetBool(_swordHash, false);
         _animator.SetBool(_holdingHash, false);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SetNewAnimationServerRpc(string newAnim)
+    {
+        SetNewAnimation(newAnim);
     }
 
     private void SetNewAnimation(string newAnim)
