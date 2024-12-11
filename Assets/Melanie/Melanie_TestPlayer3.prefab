@@ -530,6 +530,8 @@ GameObject:
   - component: {fileID: 6891515264915924100}
   - component: {fileID: 4599945409292567513}
   - component: {fileID: 8433777069384896188}
+  - component: {fileID: 2148855618496618864}
+  - component: {fileID: 8727120142565176368}
   m_Layer: 0
   m_Name: Melanie_TestPlayer3
   m_TagString: Untagged
@@ -566,7 +568,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 100148078
+  GlobalObjectIdHash: 3459088111
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -629,15 +631,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   charController: {fileID: 0}
-  _playerObj: {fileID: 803167828191313357}
+  _playerObj: {fileID: 0}
   moveSpeed: 3
   turnSpeed: 2
-  playerNetworkMovement: {fileID: 684129827861290299}
+  playerNetworkMovement: {fileID: 0}
   attackRadius: 1
   interactRadius: 1
-  interactOrigin: {fileID: 7157019367758677870}
-  _VCam: {fileID: 3768624964401596184}
-  _listener: {fileID: 2316586491175113226}
+  interactOrigin: {fileID: 0}
+  _VCam: {fileID: 0}
+  _listener: {fileID: 0}
 --- !u!54 &2189371062612846002
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -679,7 +681,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   widgetPrefab: {fileID: 3090276310191325794, guid: cfb2c9b53ca50674fb0262d49d110680, type: 3}
   attachTransform: {fileID: 6737300403739161067}
-  playerCamera: {fileID: 9149270920810735871}
 --- !u!114 &6219689259929916564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -706,7 +707,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  holdingPositionTransform: {fileID: 5537645831723588186}
+  holdingPositionTransform: {fileID: 0}
   holdSpeed: 5
   throwVelocity: 4
 --- !u!114 &1201938760374456856
@@ -782,14 +783,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 8620a030-3ebf-456d-80b4-f239892c89a7
     m_ActionName: 'Player/Interact[/Keyboard/e]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2de82148-743d-40ce-a586-173d4365c4f6
-    m_ActionName: 'Player/Look[/Mouse/delta]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 15366058-635f-4be9-8029-f5c5d2fbbec3
-    m_ActionName: 'Player/None[/Mouse/delta]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -846,6 +839,46 @@ MonoBehaviour:
   UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
+--- !u!114 &2148855618496618864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7400536117542311752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 0}
+--- !u!143 &8727120142565176368
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7400536117542311752}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7855020869756278628
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,7 +1197,7 @@ MonoBehaviour:
     OriginatingState: -2092501173
     DestinationState: -1958586048
     TransitionDuration: 0.25
-    TriggerNameHash: 1203776827
+    TriggerNameHash: -1004578160
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
@@ -1178,7 +1211,7 @@ MonoBehaviour:
     OriginatingState: -825585489
     DestinationState: -1958586048
     TransitionDuration: 0.25
-    TriggerNameHash: 1203776827
+    TriggerNameHash: -1004578160
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
