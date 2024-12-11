@@ -55,17 +55,6 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
         else
         {
             ReleaseAction(throwComp);
-
-            if (_launchComponent && throwComp.IsLocalPlayer)
-            {
-                _rigidBody.isKinematic = false;
-                _col.isTrigger = false;
-                PlayerNetwork player = throwComp.GetComponent<PlayerNetwork>();
-
-                Vector3 throwDir = player.GetPlayerForward() + player.GetPlayerUp();
-                Debug.Log("launch in pickup");
-                _launchComponent.CheckLaunch(throwDir, throwComp.GetThrowVelocity(), throwComp);
-            }
         }
     }
 
@@ -93,10 +82,13 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
         throwComp.ClearHeldObject();
         ToggleRigidBodyServerRpc();
         SetPickUpPlayerMoveability(true);
-        if (_launchComponent)
+        if (_launchComponent && throwComp.IsLocalPlayer)
         {
+            _rigidBody.isKinematic = false;
+            _col.isTrigger = false;
             PlayerNetwork player = throwComp.GetComponent<PlayerNetwork>();
-            Vector3 throwDir = player.GetPlayerUp() + player.GetPlayerForward();
+
+            Vector3 throwDir = player.GetPlayerForward() + player.GetPlayerUp();
             Debug.Log("launch in pickup");
             _launchComponent.CheckLaunch(throwDir, throwComp.GetThrowVelocity(), throwComp);
         }
