@@ -51,12 +51,14 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     [SerializeField] private CinemachineCamera _VCam;
     [SerializeField] private AudioListener _listener; 
     
-    
 
-    /*public void SetPlayerVelocity(Vector3 velocityToSet) 
-    {   
-        _playerVelocity = velocityToSet;
-    }*/
+        private int _walkingHash;
+        private int _swordHash;
+        private int _hookshotHash;
+        private int _holdingHash;
+        private int _attackHash;
+        private int _throwHash;
+        private int _pickUpHash;
 
     private void Awake()
     {
@@ -74,6 +76,13 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     
     public void Start()
     {
+        _walkingHash = Animator.StringToHash("walking");
+        _swordHash = Animator.StringToHash("Sword");
+        _hookshotHash = Animator.StringToHash("hookshot");
+        _holdingHash = Animator.StringToHash("holding");
+        _attackHash = Animator.StringToHash("attack");
+        _throwHash = Animator.StringToHash("throw");
+        _pickUpHash = Animator.StringToHash("pickUp");
         foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
         {
             GameObject otherPlayer = client.PlayerObject.gameObject;
@@ -259,3 +268,4 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         Gizmos.DrawWireSphere(interactOrigin.position, interactRadius);
     }
 }
+

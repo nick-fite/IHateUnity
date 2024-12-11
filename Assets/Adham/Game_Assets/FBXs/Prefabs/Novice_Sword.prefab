@@ -200,9 +200,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  holdingPositionTransform: {fileID: 0}
+  holdTransform: {fileID: 0}
+  heldObjTransform: {fileID: 0}
   holdSpeed: 2
-  throwVelocity: 4
 --- !u!114 &-6938593408328333261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,7 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8be178b46efae4c9557f9517345396, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newAnimSet: Sword
+  newAnimSet: sword
 --- !u!65 &1029004532392235991
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -249,4 +249,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f7e067b8a41aad4595da4302675ce93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
