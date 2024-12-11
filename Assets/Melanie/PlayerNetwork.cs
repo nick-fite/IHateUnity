@@ -51,8 +51,6 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     [SerializeField] private CinemachineCamera _VCam;
     [SerializeField] private AudioListener _listener; 
     
-
-        private int _walkingHash;
         private int _swordHash;
         private int _hookshotHash;
         private int _holdingHash;
@@ -76,8 +74,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     
     public void Start()
     {
-        _walkingHash = Animator.StringToHash("walking");
-        _swordHash = Animator.StringToHash("Sword");
+        _swordHash = Animator.StringToHash("sword");
         _hookshotHash = Animator.StringToHash("hookshot");
         _holdingHash = Animator.StringToHash("holding");
         _attackHash = Animator.StringToHash("attack");
@@ -223,23 +220,41 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         if (context.started && _damageComponent)
         {
             _damageComponent.DoDamage();
+            _animator.SetTrigger(_attackHash);
         }
     }
     public void InteractAction(InputAction.CallbackContext context)
     {
         if (!IsLocalPlayer) { return; }
 
+
         if (context.started)
         {
             TryInteract();
         }
     }
+
+    [Rpc(SendTo.Server)]
+    private void TryInteractServerRpc()
+    {
+        TryInteract();
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void TryInteractEveryoneRpc()
+    {
+        TryInteract();
+    }
+
     private void TryInteract() 
     {
+        _animator.SetTrigger(_pickUpHash);
         if (_targetInteractible != null)//we can change this later if we need to
         {
             _targetInteractible.InteractAction(this.gameObject);
             _targetInteractible = null;
+            _animator.SetTrigger(_throwHash);
+            ResetAllAnimationServerRpc();
             return;
         }
 
@@ -250,11 +265,49 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
             if (hitInteractionInterface != null && hitInteractionInterface.ShouldInteract(this.gameObject))
             {
                 _targetInteractible = hitInteractionInterface;
+                GameObject gameObj = hitCollider.gameObject;
+                gameObj.GetComponent<Collider>().isTrigger = true;
+                gameObj.GetComponent<Rigidbody>().isKinematic = true;
+                if(IsClient && IsLocalPlayer)
+                {
+                    SetNewAnimationServerRpc(gameObj.GetComponent<Item>().newAnimSet);
+                }
+                else if (IsServer && IsLocalPlayer)
+                {
+                    SetNewAnimation(gameObj.GetComponent<Item>().newAnimSet);
+                }
+
                 hitInteractionInterface.InteractAction(this.gameObject);
                 return;
+                
             }
         }
         _targetInteractible = null;///If nothing is interactible, clear just in case
+    }
+
+    [Rpc(SendTo.Server)]
+    private void ResetAllAnimationServerRpc()
+    {
+        ResetAllAnimation();
+    }
+
+    private void ResetAllAnimation()
+    {
+        _animator.SetBool(_hookshotHash, false);
+        _animator.SetBool(_swordHash, false);
+        _animator.SetBool(_holdingHash, false);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SetNewAnimationServerRpc(string newAnim)
+    {
+        SetNewAnimation(newAnim);
+    }
+
+    private void SetNewAnimation(string newAnim)
+    {
+        ResetAllAnimation();
+        _animator.SetBool(newAnim, true);
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter

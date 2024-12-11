@@ -96,7 +96,13 @@ public class ThrowComponent : NetworkBehaviour
         {
             Debug.Log($"current held obj: {heldObject.gameObject.name}, newPos: {holdingPositionTransform}, HoldSpeed: {holdSpeed}");
             Debug.Log($"slerp");
+
+
+
             heldObject.transform.position = holdingPositionTransform.position;
+            heldObject.transform.rotation = holdingPositionTransform.rotation;
         }
     }
+
+    
 }

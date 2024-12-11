@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Adham/ArenaScene.unity
     guid: a3d057aa879be69468fd5878044a116d
-  - enabled: 0
+  - enabled: 1
     path: Assets/Nick/NickArenaScene.unity
     guid: e1dacdb792fa8ba488beb287bd7af1d7
   - enabled: 0
