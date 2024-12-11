@@ -28,6 +28,6 @@ public class PlayerUI : Widget
     }
     private void OwnerNotPresent()
     {
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 }

@@ -39,12 +39,12 @@ public class DeathBox : DamageComponent
     {
         Debug.Log($"{other.gameObject.name} entered the DeathBox");
 
-        HealthComponent healthComponent = other.GetComponent<HealthComponent>();
+        HealthComponent healthComponent = other.transform.parent.GetComponent<HealthComponent>();
         if (healthComponent != null)
         {
             Debug.Log("Valid target found with HealthComponent");
-            _currentOverlappingTargets.Add(other.gameObject);
-            ApplyDamageToHealth(other.gameObject, damage);
+            _currentOverlappingTargets.Add(other.transform.parent.gameObject);
+            ApplyDamageToHealth(other.transform.parent.gameObject, damage);
         }
     }
 

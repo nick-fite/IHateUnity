@@ -100,6 +100,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         { 
             _multiplayerInputAction.Disable();
         }
+        GetComponent<HealthComponent>().OnDead += ResetPlayerParse;
         StartCoroutine(DelayThenMove());
     }
     private void Update()
@@ -283,6 +284,36 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
             }
         }
         _targetInteractible = null;///If nothing is interactible, clear just in case
+    }
+
+    private void ResetPlayerParse()
+    {
+        if(IsClient && IsLocalPlayer)
+        {
+            ResetPlayerRpc(); 
+
+        }
+        else if (IsServer && IsLocalPlayer)
+        {
+            ResetPlayer();
+
+        }
+        TryInteract();
+        StartCoroutine(DelayThenMove());
+    }
+
+    [Rpc(SendTo.Server)]
+    private void ResetPlayerRpc()
+    {
+        Debug.LogWarning("SPAWNING");
+        ResetPlayer();
+
+    }
+
+    private void ResetPlayer()
+    {
+        _characterController.transform.position = Vector3.zero;
+        GetComponent<HealthComponent>().ChangeHealth(100);
     }
 
     [Rpc(SendTo.Server)]
