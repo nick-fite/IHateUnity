@@ -20,9 +20,14 @@ public abstract class DamageComponent : NetworkBehaviour
    protected void ApplyDamage(GameObject target, float damageAmt)
    {
       Debug.Log("applying damage");
-      HealthComponent targetHealthComponent = target.GetComponent<HealthComponent>();
-      if (targetHealthComponent)
+      HealthComponent targetHealthComponent = target.GetComponentInParent<HealthComponent>();
+      if (targetHealthComponent != GetComponent<HealthComponent>() && targetHealthComponent != null)
       {
+         Rigidbody rb = target.GetComponent<Rigidbody>();
+         if(rb != null)
+         {
+            rb.AddExplosionForce(1, transform.position, 3);
+         }
          targetHealthComponent.ChangeHealth(-damageAmt);
       }
    }
