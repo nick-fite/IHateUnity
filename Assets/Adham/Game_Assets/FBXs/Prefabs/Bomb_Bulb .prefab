@@ -12,7 +12,9 @@ GameObject:
   - component: {fileID: 7224930871204910846}
   - component: {fileID: 4896761701362120272}
   - component: {fileID: 2808833430984480170}
-  - component: {fileID: 8905108082388492762}
+  - component: {fileID: 4933845259595164498}
+  - component: {fileID: 8034984887962180601}
+  - component: {fileID: -8217518041274615653}
   m_Layer: 0
   m_Name: 'Bomb_Bulb '
   m_TagString: Untagged
@@ -113,7 +115,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &8905108082388492762
+--- !u!114 &4933845259595164498
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,16 +124,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 3253388598446878361}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 177b36ed5855cf0448dd34132a059ad5, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e255ed08dff5ec45bfaaf8401b8895c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  bAttackFriendly: 1
-  bAttackEnemy: 1
-  bAttackNeutral: 1
-  damage: 40
-  explosionRadius: 2
-  countdownTime: 3.2
+--- !u!114 &8034984887962180601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3253388598446878361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a8be178b46efae4c9557f9517345396, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  newAnimSet: holding
+--- !u!114 &-8217518041274615653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3253388598446878361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f7e067b8a41aad4595da4302675ce93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3366511213303642604
 GameObject:
   m_ObjectHideFlags: 0
