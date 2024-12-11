@@ -60,9 +60,11 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
             {
                 _rigidBody.isKinematic = false;
                 _col.isTrigger = false;
-                Vector3 throwDir = throwComp.gameObject.transform.forward + throwComp.gameObject.transform.up;
+                PlayerNetwork player = throwComp.GetComponent<PlayerNetwork>();
+
+                Vector3 throwDir = player.GetPlayerForward() + player.GetPlayerUp();
                 Debug.Log("launch in pickup");
-                _launchComponent.LaunchServerRpc(throwDir, 4f/*, throwComp.gameObject*/);
+                _launchComponent.CheckLaunch(throwDir, throwComp.GetThrowVelocity(), throwComp);
             }
         }
     }
