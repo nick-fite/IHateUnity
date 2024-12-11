@@ -705,7 +705,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  holdingPositionTransform: {fileID: 7157019367758677870}
+  holdingPositionTransform: {fileID: 5537645831723588186}
   holdSpeed: 5
   throwVelocity: 4
 --- !u!114 &1201938760374456856
@@ -1155,50 +1155,57 @@ MonoBehaviour:
     OriginatingState: -2092501173
     DestinationState: -1958586048
     TransitionDuration: 0.25
-    TriggerNameHash: -1004578160
+    TriggerNameHash: 1203776827
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -2092501173
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
+    TriggerNameHash: 1335050551
     TransitionIndex: 3
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -825585489
     DestinationState: -1958586048
     TransitionDuration: 0.25
-    TriggerNameHash: -1004578160
+    TriggerNameHash: 1203776827
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -825585489
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
+    TriggerNameHash: 1335050551
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 1515803813
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
+    TriggerNameHash: 1335050551
     TransitionIndex: 2
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1028202203
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
+    TriggerNameHash: 1335050551
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 533335303
     DestinationState: -1907200461
     TransitionDuration: 0.25
-    TriggerNameHash: -1907200461
-    TransitionIndex: 1
+    TriggerNameHash: 1335050551
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: -1028202203
+    DestinationState: -736486049
+    TransitionDuration: 0.25
+    TriggerNameHash: -736486049
+    TransitionIndex: 3
   m_Animator: {fileID: 6237081527093624077}
 --- !u!4 &2184714184573042516 stripped
 Transform:

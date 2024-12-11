@@ -236,10 +236,12 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     }
     private void TryInteract() 
     {
+        _animator.SetTrigger(_pickUpHash);
         if (_targetInteractible != null)//we can change this later if we need to
         {
             _targetInteractible.InteractAction(this.gameObject);
             _targetInteractible = null;
+            _animator.SetTrigger(_throwHash);
             return;
         }
 
@@ -250,11 +252,26 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
             if (hitInteractionInterface != null && hitInteractionInterface.ShouldInteract(this.gameObject))
             {
                 _targetInteractible = hitInteractionInterface;
+                GameObject gameObj = hitCollider.gameObject;
+                gameObj.GetComponent<Collider>().isTrigger = true;
+                gameObj.GetComponent<Rigidbody>().isKinematic = true;
+                SetNewAnimation(gameObj.GetComponent<Item>().newAnimSet);
+
                 hitInteractionInterface.InteractAction(this.gameObject);
                 return;
+                
             }
         }
         _targetInteractible = null;///If nothing is interactible, clear just in case
+    }
+
+    private void SetNewAnimation(string newAnim)
+    {
+        _animator.SetBool(_hookshotHash, false);
+        _animator.SetBool(_swordHash, false);
+        _animator.SetBool(_holdingHash, false);
+
+        _animator.SetBool(newAnim, true);
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
