@@ -12,12 +12,15 @@ public class NetworkManagerUI : MonoBehaviour, INetworkSerializable
     private void Awake()
     {
         serverBtn.onClick.AddListener(() => {
+            this.gameObject.SetActive(false);
             NetworkManager.Singleton.StartServer();
         });
         hostBtn.onClick.AddListener(() => {
+            this.gameObject.SetActive(false);
             NetworkManager.Singleton.StartHost();
         });
         clientBtn.onClick.AddListener(() => {
+            this.gameObject.SetActive(false);
             NetworkManager.Singleton.StartClient();
         });
     }

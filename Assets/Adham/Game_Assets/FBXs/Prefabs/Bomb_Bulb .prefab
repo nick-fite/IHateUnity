@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 8034984887962180601}
   - component: {fileID: -8217518041274615653}
   - component: {fileID: 5536725529379938465}
-  - component: {fileID: -365636109519155935}
   m_Layer: 0
   m_Name: 'Bomb_Bulb '
   m_TagString: Untagged
@@ -192,25 +191,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &-365636109519155935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3253388598446878361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 177b36ed5855cf0448dd34132a059ad5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  bAttackFriendly: 1
-  bAttackEnemy: 1
-  bAttackNeutral: 1
-  damage: 100
-  explosionRadius: 5
-  countdownTime: 2
 --- !u!1 &3366511213303642604
 GameObject:
   m_ObjectHideFlags: 0
