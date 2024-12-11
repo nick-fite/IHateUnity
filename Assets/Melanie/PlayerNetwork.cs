@@ -7,6 +7,7 @@ using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
+using Object = UnityEngine.Object;
 
 [RequireComponent(typeof(NetworkTransform))]
 [RequireComponent(typeof(NetworkObject))]
@@ -102,6 +103,18 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         }
         GetComponent<HealthComponent>().OnDead += ResetPlayerParse;
         StartCoroutine(DelayThenMove());
+
+
+        GameObject networkUIObject = GameObject.FindGameObjectWithTag("NetworkManagerUI");
+        if (!networkUIObject)
+        {
+            return;
+        }
+        NetworkManagerUI networkUI = networkUIObject.GetComponent<NetworkManagerUI>();
+        if (networkUI)
+        {
+            networkUI.SetCurrentPlayerName();
+        }
     }
     private void Update()
     {
@@ -222,6 +235,15 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         {
             _damageComponent.DoDamage();
             _animator.SetTrigger(_attackHash);
+        }
+    }
+    public void LeaveAction(InputAction.CallbackContext context)
+    {
+        if (!IsLocalPlayer) { return; }
+        if (context.started)
+        { 
+            Application.Quit();
+            Debug.Log("Quit");
         }
     }
     public void InteractAction(InputAction.CallbackContext context)
