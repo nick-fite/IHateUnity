@@ -22,8 +22,23 @@ public class ThrowComponent : NetworkBehaviour
 
     public void ClearHeldObject() 
     {
-        heldObject = null; 
+        ClearHeldObjectServerRpc();
     }
+    [Rpc(SendTo.Server)]
+    private void ClearHeldObjectServerRpc() 
+    {
+        ClearHeldObjectClientRpc();
+    }
+    [Rpc(SendTo.Everyone)]
+    private void ClearHeldObjectClientRpc() 
+    {
+        ClearHeldObjectAction();
+    }
+    private void ClearHeldObjectAction() 
+    {
+        heldObject = null;
+    }
+
     public bool IsHeldPosition()
     {
         if (!holdingPositionTransform)
