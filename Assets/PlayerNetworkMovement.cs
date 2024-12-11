@@ -99,7 +99,6 @@ public class PlayerNetworkMovement : MultiplayerActor
     private void ControlWalkingAnimationServerRpc(bool ContinueAnim)
     {
         ControlWalkingAnimation(ContinueAnim);
-        Debug.Log(gameObject.name + " walking is " + ContinueAnim);
     }
 
     private void ControlWalkingAnimation(bool ContinueAnim)

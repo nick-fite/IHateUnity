@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using Unity.Cinemachine;
+using Unity.Mathematics;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -41,7 +42,8 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     private Vector3 _playerVelocity;
 
     [Header("Interaction")]
-    [SerializeField] float interactRadius;
+    [SerializeField] float attackRadius = 1f;
+    [SerializeField] float interactRadius = 1f;
     [SerializeField] Transform interactOrigin;
     private IinteractionInterface _targetInteractible;
 
@@ -57,36 +59,12 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         private int _throwHash;
         private int _pickUpHash;
 
-    public void SetPlayerVelocity(Vector3 velocityToSet) 
-    {   
-        _playerVelocity = velocityToSet;
-    }
-    public void SetTargetInteractible(GameObject objectToSet) 
-    {
-        if (objectToSet == null)
-        {
-            _targetInteractible = null;
-            return;
-        }
-        IinteractionInterface targetInteractible = objectToSet.GetComponent<IinteractionInterface>();
-        if (targetInteractible == null) 
-        {
-            _targetInteractible = null;
-            return;
-        }
-        _targetInteractible = targetInteractible;
-    }
-
     private void Awake()
     {
         OnUpdateAllConnections += UpdateAllConnections;
 
         _multiplayerInputAction = new MultiplayerInputAction();
 
-        if (IsLocalPlayer)
-        { 
-            _multiplayerInputAction.Enable();
-        }
         _playerInput = GetComponent<PlayerInput>();
         _bCanMove = true;
 
@@ -119,6 +97,12 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
                 playerNetwork.OnUpdateAllConnections?.Invoke();
             }
         }
+        
+        if (IsLocalPlayer)
+        { 
+            _multiplayerInputAction.Disable();
+        }
+        StartCoroutine(DelayThenMove());
     }
     private void Update()
     {
@@ -132,38 +116,6 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         if (!_characterController) { return; }
         playerNetworkMovement.MovePlayer(_rawMovementInput, moveSpeed);
     }
-
-    /*private void ProcessAllMovement(Vector2 rawInput, float movementSpeed)
-    {
-        ProcessAllMovementServerRpc(rawInput, movementSpeed);
-    }
-    [Rpc(SendTo.Server)]
-    private void ProcessAllMovementServerRpc(Vector2 rawInput, float movementSpeed) 
-    {
-        ProcessMove(rawInput, moveSpeed);
-    }
-    
-    /*[Rpc(SendTo.Everyone)]
-    private void ProcessAllMovementClientRpc(Vector2 rawInput, float movementSpeed)
-    {
-        ProcessLocalMovement(rawInput, movementSpeed);
-    }
-    private void ProcessLocalMovement(Vector2 rawInput, float movementSpeed) 
-    {
-        ProcessMove(rawInput, movementSpeed);
-        ProcessGravity();
-    }
-    private void ProcessGravity()
-    {
-        _playerVelocity.y += Time.deltaTime * _gravity;
-
-        if (_bIsGrounded && _playerVelocity.y < 0)
-        {
-            _playerVelocity.y = -2f;
-        }
-        _characterController.Move(Time.deltaTime * _playerVelocity);
-    }*/
-
     private void UpdateAllConnections()
     {
         NameComponent nameComponent = GetComponent<NameComponent>();
@@ -197,31 +149,59 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        SpawnPlayerServerRpc();
     }
-
-    [Rpc(SendTo.Server)]
-    private void SpawnPlayerServerRpc()
-    {
-        SpawnPlayerClientRpc();
-    }
-    [Rpc(SendTo.Everyone)]
-    private void SpawnPlayerClientRpc()
-    {
-        List<GameObject> positions = new List<GameObject>();
-        positions.Clear();
-        positions.AddRange(GameObject.FindGameObjectsWithTag("SpawnPoints"));
-        int rand = UnityEngine.Random.Range(0, positions.Count);
-        Transform newPos = positions[rand].transform;
-        NetworkTransform nt = GetComponent<NetworkTransform>();
-        nt.Teleport(newPos.position, newPos.rotation, newPos.localScale);   
-    }
-
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
         OnPlayerDisconnect?.Invoke();
     }
+
+    IEnumerator DelayThenMove()
+    {
+        yield return new WaitForSeconds(5);
+        ParseMoveToSpawnPos();
+        if (IsLocalPlayer)
+        { 
+            _multiplayerInputAction.Disable();
+        }
+    }
+
+    private void ParseMoveToSpawnPos()
+    {
+        if(IsServer && IsLocalPlayer)
+        {
+            MoveToSpawnPos();
+        }
+        if(IsClient && IsLocalPlayer)
+        {
+            MoveToSpawnPosServerRpc();
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void MoveToSpawnPosServerRpc()
+    {
+        MoveToSpawnPos();
+    }
+
+    private void MoveToSpawnPos()
+    {
+        GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoints");
+        Transform newSpawn = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)].transform;
+        _characterController.transform.position = newSpawn.position;
+        _characterController.transform.rotation = newSpawn.rotation;
+    }
+
+    public Vector3 GetPlayerUp()
+    {
+        return _characterController.transform.up;
+    }
+
+    public Vector3 GetPlayerForward()
+    {
+        return _characterController.transform.forward;
+    }
+
 
     public void MoveAction(InputAction.CallbackContext context) 
     {
