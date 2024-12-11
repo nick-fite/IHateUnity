@@ -17,7 +17,7 @@ public class NameTagWidget : Widget
             ownerNameComponent.OnDisplayNameChanged += UpdateText;
         }
     }
-    private void UpdateText(string newName)
+    public void UpdateText(string newName)
     {
         if (newName == "" || newName == null)
         {

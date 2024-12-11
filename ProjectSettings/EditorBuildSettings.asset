@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 0
+  - enabled: 1
     path: Assets/Adham/ArenaScene.unity
     guid: a3d057aa879be69468fd5878044a116d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Nick/NickArenaScene.unity
     guid: bf515333ea7c17d4d8006c0f067f1f3d
   - enabled: 0
@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Melanie/MelanieArenaScene.unity
     guid: 10839243820a34f4f8701807e6fb3557
+  - enabled: 0
+    path: Assets/Adham/CopiedArenaScene 1.unity
+    guid: f76b1e8323fbf05429b66d806f436f5f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

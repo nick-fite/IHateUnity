@@ -162,13 +162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  charController: {fileID: 0}
-  _playerObj: {fileID: 88659661692735419}
   moveSpeed: 3
   turnSpeed: 2
-  playerNetworkMovement: {fileID: 0}
-  _VCam: {fileID: 0}
-  _listener: {fileID: 0}
 --- !u!114 &6071674697684833259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,7 +283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3935e2ffe8f07164689764e461d6d425, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
   holdTransform: {fileID: 3121184305961386665}
   heldObjTransform: {fileID: 0}
   holdSpeed: 5
@@ -365,10 +359,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 8620a030-3ebf-456d-80b4-f239892c89a7
     m_ActionName: 'Player/Interact[/Keyboard/e]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2de82148-743d-40ce-a586-173d4365c4f6
-    m_ActionName: 'Player/Look[/Mouse/delta]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

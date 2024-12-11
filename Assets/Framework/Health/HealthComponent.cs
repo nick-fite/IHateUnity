@@ -68,7 +68,7 @@ public class HealthComponent : NetworkBehaviour
             OnDead?.Invoke();
         }
     }
-    private void UpdateHealthValue(float prevAmount, float currentAmount)
+    public void UpdateHealthValue(float prevAmount, float currentAmount)
     {
         Debug.Log($"Update Health: prevAmt={prevAmount}, currAmt={currentAmount}");
         OnHealthChanged?.Invoke(currentAmount, 0, maxHealth);

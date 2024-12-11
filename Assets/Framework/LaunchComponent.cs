@@ -1,61 +1,64 @@
 using System;
-using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public class LaunchComponent : NetworkBehaviour
+public class LaunchComponent : MonoBehaviour
 {
     Rigidbody _rigidBody;
     PlayerNetwork _playerNetwork;
-
-    private NetworkVariable<Vector3> finalVelocity = new NetworkVariable<Vector3>();
 
     private void Start()
     {
         _rigidBody = GetComponent<Rigidbody>();
         _playerNetwork = GetComponent<PlayerNetwork>();
     }
-    public void CheckLaunch(Vector3 launchDirection, float launchVelocity) 
-    {
-        if (!IsLocalPlayer)
-        {
-            return;
-        }
-
-        finalVelocity.Value = launchDirection * launchVelocity;
-        if (IsServer)
-        {
-            Launch(launchDirection * launchVelocity);
-        }
-        else if (IsClient)
-        {
-            LaunchServerRpc(launchDirection * launchVelocity);
-        }
-    }
     [Rpc(SendTo.Server)]
-    private void LaunchServerRpc(Vector3 velocity) 
+    public void LaunchServerRpc(Vector3 launchDirection, float launchVelocity) 
     {
-        Launch(velocity);
+        LaunchClientRpc(launchDirection, launchVelocity);
     }
-    private void Launch(Vector3 velocity) 
+
+    [Rpc(SendTo.Everyone)]
+    public void LaunchClientRpc(Vector3 launchDirection, float launchVelocity) 
+    {
+        Launch(launchDirection, launchVelocity);
+    }
+
+    public void Launch(Vector3 launchDirection, float launchVelocity/*, GameObject instigator = null*/) 
     {
         Debug.Log("launch");
+
+        /*if (instigator && !instigator.GetComponent<NetworkBehaviour>().IsLocalPlayer)
+        {
+            return;
+        }*/
+        Vector3 finalVelocity = launchDirection * launchVelocity;
 
         if (_rigidBody)
         {
             //_rigidBody.AddForce(finalVelocity, ForceMode.VelocityChange);
-            AddRigidBodyForce(velocity);
+            AddRigidBodyForceServerRpc(finalVelocity, ForceMode.VelocityChange);
         }
-        if (_playerNetwork)//WIP
+        if (_playerNetwork)
         {
-            _playerNetwork.SetPlayerVelocity(velocity);
+            _playerNetwork.SetPlayerVelocity(finalVelocity);
         }
     }
 
-    private void AddRigidBodyForce(Vector3 velocity)
+    [Rpc(SendTo.Server)]
+    public void AddRigidBodyForceServerRpc(Vector3 velocity, ForceMode mode)
     {
-        Debug.Log("RigidBody add force");
-        _rigidBody.useGravity = true;
-        _rigidBody.AddForce(velocity, ForceMode.VelocityChange);
+        AddRigidBodyForceClientRpc(velocity, mode);
+    }
+    [Rpc(SendTo.Everyone)]
+    public void AddRigidBodyForceClientRpc(Vector3 velocity, ForceMode mode)
+    {
+        AddRigidBodyForce(velocity, mode);
+    }
+    private void AddRigidBodyForce(Vector3 velocity, ForceMode mode)
+    {
+        Debug.Log($"RigidBodyForce - Velocity: {velocity.x}, {velocity.y}, {velocity.z} - Mode: {mode}");
+
+        _rigidBody.AddForce(velocity, mode);
     }
 }

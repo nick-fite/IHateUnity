@@ -6,26 +6,21 @@ using UnityEngine;
 
 public class ThrowComponent : NetworkBehaviour
 {
-    [SerializeField] private Transform holdingPositionTransform;
-    private Transform heldObjTransform;
+    [SerializeField] private Transform holdTransform;
+    [SerializeField]private Transform heldObjTransform;
 
     [SerializeField] private float holdSpeed = 2f;
     private NetworkVariable<bool> _bIsHolding = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+    private List<GameObject> _currentOverlappingTargets = new List<GameObject>();
+
     public void SetIsHolding(bool stateToSet) { _bIsHolding.Value = stateToSet; }
-    public void SetHeldObject(Transform heldObjToSet) { heldObjTransform = heldObjToSet; }
-    public void ClearHeldObject() 
+    public void ClearHeldObj() 
     {
+        _currentOverlappingTargets.Remove(heldObjTransform.gameObject);
         heldObjTransform = null; 
     }
-    public bool IsHeldPosition()
-    {
-        if (!holdingPositionTransform)
-        {
-            return false;
-        }
-        return true;
-    }
+
     private void Update()
     {
         if (_bIsHolding.Value)
@@ -33,47 +28,27 @@ public class ThrowComponent : NetworkBehaviour
             HoldObject();
         }
     }
-    private void CheckHoldAction() 
-    {
-        if (!IsLocalPlayer)
-        {
-            return;
-        }
 
-        if (IsServer) 
-        {
-            HoldObject();
-        }
-        else if (IsClient)
-        { 
-            HoldObjectServerRpc();
-        }
-    }
-
-    [Rpc(SendTo.Server)]
-    private void HoldObjectServerRpc()
-    {
-        HoldObjectClientRpc();
-    }
-    [Rpc(SendTo.Everyone)]
-    private void HoldObjectClientRpc()
-    {
-        HoldObject();
-    }
     private void HoldObject()
     {
-        Debug.Log($"current held obj: {heldObjTransform.gameObject.name}, newPos: {holdingPositionTransform}, HoldSpeed: {holdSpeed}");
-        if (holdingPositionTransform && heldObjTransform)
+        if (holdTransform && heldObjTransform)
         {
-            Debug.Log($"slerp");
-            heldObjTransform.position = Vector3.Slerp(heldObjTransform.position, holdingPositionTransform.position, holdSpeed * Time.deltaTime);
+            heldObjTransform.position = Vector3.Slerp(heldObjTransform.position, holdTransform.position, holdSpeed * Time.deltaTime);
         }
     }
-
-
-
-    //To Be Removed
-    /*private void OnTriggerEnter(Collider other)
+    private bool ShouldHoldObject(GameObject other) 
+    {
+        return !_currentOverlappingTargets.Contains(other.gameObject);
+    }
+    public bool TryPickUpThrowableObject()
+    {
+        if (!heldObjTransform)
+        {
+            return false;
+        }
+        return true;
+    }
+    public void OnTriggerEnter(Collider other)
     {
         PickupComponent pickUpComponent = other.GetComponent<PickupComponent>();
         if (pickUpComponent == null)
@@ -99,7 +74,7 @@ public class ThrowComponent : NetworkBehaviour
         if (heldObjTransform == null || heldObjTransform.gameObject != other.gameObject || _bIsHolding.Value == true)
         {
             Debug.Log("return");
-            return;
+            return;//held object is still in range.
         }
         Debug.Log("removed");
         _currentOverlappingTargets.Remove(other.gameObject);
@@ -114,5 +89,5 @@ public class ThrowComponent : NetworkBehaviour
             heldObjTransform = null;
             GetComponent<PlayerNetwork>().SetTargetInteractible(null);
         }
-    }*/
+    }
 }

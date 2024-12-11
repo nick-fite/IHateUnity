@@ -6,35 +6,36 @@ using UnityEngine;
 public class PlayerSpawner : NetworkBehaviour
 {
 
-    [SerializeField] private GameObject _playerPrefab;
-    [SerializeField] private List<GameObject> positions;
+    [SerializeField] private GameObject _player;
+    [SerializeField] private List<Transform> positions;
 
-    NetworkManager nm;
 
-    private void Awake()
+    void Start()
     {
-        
-        positions = new List<GameObject>();
+        DontDestroyOnLoad(this.gameObject);        
     }
 
     public override void OnNetworkSpawn()
     {
-        //onClientConnected(OwnerClientId);
-        //NetworkManager.Singleton.OnClientConnectedCallback += onClientConnected;
+        positions = new List<Transform>();
+
+        NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
     }
 
-    private void onClientConnected(ulong clientId)
+    public void SceneLoaded(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        Transform spawnPos = GetRandomSpawnPos();
-        GameObject player = Instantiate(_playerPrefab, spawnPos.position, spawnPos.rotation);
-        player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-    }
-
-    private Transform GetRandomSpawnPos()
-    {
-        positions.Clear();
-        positions.AddRange(GameObject.FindGameObjectsWithTag("SpawnPoints"));
-        int rand = Random.Range(0, positions.Count);
-        return positions[rand].transform;
+        Debug.Log("This is being called from PlayerSpawner");
+        if(IsHost)
+        {
+            foreach(ulong id in clientsCompleted)
+            {
+                Debug.Log("making player");
+                int Length = positions.Count;
+                int rand = Random.Range(0, Length);
+                Transform pos = positions[rand];
+                GameObject player = Instantiate(_player, pos.position, pos.rotation);
+                player.GetComponent<NetworkObject>().SpawnAsPlayerObject(id, true);
+            }
+        }
     }
 }

@@ -3,14 +3,9 @@ using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
 
-
-[RequireComponent(typeof(NetworkObject))]
-[RequireComponent(typeof(NetworkTransform))]
-[RequireComponent(typeof(Rigidbody))]
 public class PickupComponent : NetworkBehaviour, IinteractionInterface
 {
-    PlayerNetwork _playerNetwork;
-    CharacterController _characterController;
+    NetworkRigidbody nt;
     Rigidbody _rigidBody;
     LaunchComponent _launchComponent;
     private bool _bIsPickedUp;
@@ -18,36 +13,69 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
     private void Start()
     {
         _bIsPickedUp = false;
-        _playerNetwork = GetComponent<PlayerNetwork>();
-        _characterController = GetComponent<CharacterController>();
         _launchComponent = GetComponent<LaunchComponent>();
         _rigidBody = GetComponent<Rigidbody>();
     }
-    public bool ShouldInteract(GameObject interactor)
+
+    /*public override void OnNetworkSpawn()
     {
-        ThrowComponent throwComponent = interactor.GetComponent<ThrowComponent>();
-        if (!throwComponent || !throwComponent.IsHeldPosition())
-        {
-            return false;
-        }
-        if (interactor == this.gameObject)
-        {
-            return false;
-        }
-        return true;
+        base.OnNetworkSpawn();
+        _bIsPickedUp.OnValueChanged += UpdatePickedUpValue;
+    }*/
+    public void Update()
+    {
+        Debug.Log($"Use gravity is: {_rigidBody.useGravity}");
     }
+
+    private void UpdatePickedUpValue(bool prevState, bool newState)
+    {
+        Debug.Log($"Awake b4 statement: bIPU={prevState}, new bIPU={newState}");
+    }
+    /*private void ProcessPickupCheck(NetworkObjectReference playerInteractor)
+    {
+        if (IsLocalPlayer)
+        {
+            ProcessPickupServerRpc(playerInteractor);
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void ProcessPickupServerRpc(NetworkObjectReference playerInteractor)
+    {
+        if (playerInteractor.TryGet(out NetworkObject networkObj))
+        {
+            ThrowComponent throwComponent = networkObj.gameObject.GetComponent<ThrowComponent>();
+            ProcessPickup(throwComponent);
+        }
+    }*/
     public void InteractAction(GameObject interactor)
     {
         ThrowComponent throwComponent = interactor.GetComponent<ThrowComponent>();
-        throwComponent.SetHeldObject(this.gameObject.transform);
+        if (!throwComponent || !throwComponent.TryPickUpThrowableObject())
+        {
+            return;
+        }
+
+        //ProcessPickupCheck(interactor);
         ProcessPickup(throwComponent);
     }
-    private void ProcessPickup(ThrowComponent throwComp) 
+    public bool ShouldInteract(GameObject interactor)
+    {
+        if (interactor != gameObject)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    public void ProcessPickup(ThrowComponent throwComp) 
     {
         Debug.Log($"instigator: {throwComp.gameObject}");
+        Debug.Log("ProcessPickup Start");
+
 
         _bIsPickedUp = !_bIsPickedUp;
-        Debug.Log($"Toggle _bIsPickedUp: {_bIsPickedUp}");
+        Debug.Log("After bool changed");
 
         if (_bIsPickedUp == true)
         {
@@ -56,74 +84,52 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
         else
         {
             ReleaseAction(throwComp);
+            if (_launchComponent && throwComp.IsLocalPlayer)
+            {
+                Vector3 throwDir = throwComp.gameObject.transform.forward + throwComp.gameObject.transform.up;
+                Debug.Log("launch in pickup");
+                _launchComponent.LaunchServerRpc(throwDir, 4f/*, throwComp.gameObject*/);
+            }
         }
     }
-    /*[Rpc(SendTo.Server)]
-    private void TogglePickedUpServerRpc() 
+    public virtual void PickupAction(ThrowComponent throwComponent)
     {
-        TogglePickedUp();
-    }
-
-    private void TogglePickedUp()
-    {
-        _bIsPickedUp = !_bIsPickedUp;
-    }*/
-
-    protected virtual void PickupAction(ThrowComponent throwComp)
-    {
-        throwComp.SetIsHolding(true);
+        throwComponent.SetIsHolding(true);
         Debug.Log("PickupComp: PickedUp");
-        if (throwComp.IsLocalPlayer)
+        //DEBUG
+        if (throwComponent.IsLocalPlayer)
         {
             ToggleRigidBodyServerRpc();
         }
-        SetPickUpPlayerMoveability(false);
+        //_rigidBody.useGravity = false;
     }
 
-    protected virtual void ReleaseAction(ThrowComponent throwComp) 
+    public virtual void ReleaseAction(ThrowComponent throwComponent) 
     {
-        throwComp.SetIsHolding(false);
-        throwComp.ClearHeldObject();
+        throwComponent.SetIsHolding(false);
+        throwComponent.ClearHeldObj();
         Debug.Log("PickupComp: released");
-        if (!throwComp.IsLocalPlayer)
-        {
-            return;
+        if (throwComponent.IsLocalPlayer)
+        { 
+            ToggleRigidBodyServerRpc();
         }
-        ToggleRigidBodyServerRpc();
-        SetPickUpPlayerMoveability(true);
-        if (_launchComponent)
-        {
-            Vector3 throwDir = throwComp.gameObject.transform.forward + throwComp.gameObject.transform.up;
-            Debug.Log("launch in pickup");
-            _launchComponent.CheckLaunch(throwDir, 4f/*, throwComp.gameObject*/);
-        }
-    }
-
-    private void SetPickUpPlayerMoveability(bool stateToSet) //WIP
-    {
-        if (_characterController)
-        {
-            _characterController.enabled = stateToSet;
-        }
-        if (_playerNetwork)
-        {
-            _playerNetwork.enabled = stateToSet;
-        }
+        //_rigidBody.useGravity = true;
     }
 
     [Rpc(SendTo.Server)]
-    private void ToggleRigidBodyServerRpc()
+    public void ToggleRigidBodyServerRpc()
     {
         ToggleRigidBodyClientRpc();
     }
     [Rpc(SendTo.Everyone)]
-    private void ToggleRigidBodyClientRpc() 
+    public void ToggleRigidBodyClientRpc() 
     {
         ToggleRigidBody();
     }
     private void ToggleRigidBody()
     {
+        Debug.Log("Toggle Rigidbody gravity");
+        //DEBUG
         _rigidBody.useGravity = !_rigidBody.useGravity;
-        Debug.Log($"Toggle Rigidbody gravity: {_rigidBody.useGravity}");
     }
 }

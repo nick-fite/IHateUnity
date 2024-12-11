@@ -49,16 +49,16 @@ public class NameComponent : NetworkBehaviour, INetworkSerializable
         }
     }
     [Rpc(SendTo.Server)]
-    private void UpdateNameServerRpc(NetworkString newName)
+    public void UpdateNameServerRpc(NetworkString newName)
     {
         UpdateNameClientRpc(newName);
     }
     [Rpc(SendTo.Everyone)]
-    private void UpdateNameClientRpc(NetworkString newName)
+    public void UpdateNameClientRpc(NetworkString newName)
     {
         UpdateName(newName);
     }
-    private void UpdateName(NetworkString newName)
+    public void UpdateName(NetworkString newName)
     {
         _playerName = newName;
         OnDisplayNameChanged?.Invoke(_playerName);

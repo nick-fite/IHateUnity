@@ -7,6 +7,7 @@ public class ValueGauge : Widget
 
     public void UpdateValue(float newValue, float newMaxValue)
     {
+        Debug.LogWarning("HEALTH BAR CHANGING");
         if (newMaxValue == 0)
             return;
 

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using Unity.Cinemachine;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -8,9 +6,11 @@ using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
 [RequireComponent(typeof(NetworkTransform))]
+[RequireComponent(typeof(NetworkAnimator))]
 [RequireComponent(typeof(NetworkObject))]
+[RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(PlayerInput))]
-public class PlayerNetwork : MultiplayerActor, ITeamInterface
+public class PlayerNetwork : NetworkBehaviour, ITeamInterface
 {
     public delegate void OnUpdateAllConnectionsDelegate();
     public OnUpdateAllConnectionsDelegate OnUpdateAllConnections;
@@ -23,7 +23,6 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     PlayerInput _playerInput;
     private MultiplayerInputAction _multiplayerInputAction;
     private CharacterController _characterController;
-    [SerializeField] private GameObject _playerObj;
 
 
     ///[Additional Components]
@@ -34,22 +33,13 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     [SerializeField] private float turnSpeed = 2f;
     Vector2 _rawMovementInput;
     bool _bCanMove = true; //<-- if we want to lock the player movement at some point
-    [SerializeField] PlayerNetworkMovement playerNetworkMovement;
 
     private bool _bIsGrounded;
     private float _gravity = -9.81f;
     private Vector3 _playerVelocity;
 
-    [Header("Interaction")]
-    [SerializeField] float interactRadius;
-    [SerializeField] Transform interactOrigin;
-    private IinteractionInterface _targetInteractible;
-
-    [Header("Camera")]
-    [SerializeField] private CinemachineCamera _VCam;
-    [SerializeField] private AudioListener _listener; 
-    
-    
+    [Header("Other [Read Only]")]
+    [SerializeField ]private IinteractionInterface _targetInteractible;
 
     public void SetPlayerVelocity(Vector3 velocityToSet) 
     {   
@@ -85,8 +75,8 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         _bCanMove = true;
 
         _animator = GetComponentInChildren<Animator>();
+        _characterController = GetComponent<CharacterController>();
         _damageComponent = GetComponent<DamageComponent>();
-        _characterController = _playerObj.GetComponent<CharacterController>();
     }
     
     public void Start()
@@ -117,20 +107,26 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     private void FixedUpdate()
     {
         if (!_characterController) { return; }
-        playerNetworkMovement.MovePlayer(_rawMovementInput, moveSpeed);
+        ProcessAllMovement(_rawMovementInput, moveSpeed);
     }
 
-    /*private void ProcessAllMovement(Vector2 rawInput, float movementSpeed)
+    private void ProcessAllMovement(Vector2 rawInput, float movementSpeed)
     {
-        ProcessAllMovementServerRpc(rawInput, movementSpeed);
+        if (IsServer && IsLocalPlayer)
+        {
+            ProcessAllMovementServerRpc(rawInput, movementSpeed);
+        }
+        else if (IsClient && IsLocalPlayer)
+        { 
+            ProcessAllMovementServerRpc(rawInput, movementSpeed);
+        }
     }
     [Rpc(SendTo.Server)]
     private void ProcessAllMovementServerRpc(Vector2 rawInput, float movementSpeed) 
     {
-        ProcessMove(rawInput, moveSpeed);
+        ProcessAllMovementClientRpc(rawInput, movementSpeed);
     }
-    
-    /*[Rpc(SendTo.Everyone)]
+    [Rpc(SendTo.Everyone)]
     private void ProcessAllMovementClientRpc(Vector2 rawInput, float movementSpeed)
     {
         ProcessLocalMovement(rawInput, movementSpeed);
@@ -139,6 +135,32 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     {
         ProcessMove(rawInput, movementSpeed);
         ProcessGravity();
+    }
+
+    private void ProcessMove(Vector2 rawInput, float movementSpeed)
+    {
+        if (!_bCanMove) { return; }
+
+        //Moving character
+        Vector3 movementValue = new Vector3(rawInput.x, 0, rawInput.y);
+        Vector3 moveInDirection = transform.TransformDirection(movementValue);
+        _characterController.Move(moveInDirection * (movementSpeed * Time.fixedDeltaTime));
+
+        //animation
+        if (!_animator) { return; }
+
+        if (movementValue != Vector3.zero)
+        {
+            _animator.SetBool("walking", true);
+        }
+        else
+        { 
+            _animator.SetBool("walking", false);
+        }
+
+        //rotating whole character in movement direction
+        /*Quaternion goalRotation = Quaternion.LookRotation(moveInDirection, Vector3.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation, goalRotation, Time.deltaTime * turnSpeed);*/
     }
     private void ProcessGravity()
     {
@@ -149,7 +171,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
             _playerVelocity.y = -2f;
         }
         _characterController.Move(Time.deltaTime * _playerVelocity);
-    }*/
+    }
 
     private void UpdateAllConnections()
     {
@@ -171,39 +193,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         {
             _multiplayerInputAction.Disable();
         }
-
-        if(IsOwner)
-        {
-            _listener.enabled = true;
-            _VCam.Priority = 1;
-        }
-        else
-        {
-            _VCam.Priority = 0;
-        }
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        SpawnPlayerServerRpc();
     }
-
-    [Rpc(SendTo.Server)]
-    private void SpawnPlayerServerRpc()
-    {
-        SpawnPlayerClientRpc();
-    }
-    [Rpc(SendTo.Everyone)]
-    private void SpawnPlayerClientRpc()
-    {
-        List<GameObject> positions = new List<GameObject>();
-        positions.Clear();
-        positions.AddRange(GameObject.FindGameObjectsWithTag("SpawnPoints"));
-        int rand = UnityEngine.Random.Range(0, positions.Count);
-        Transform newPos = positions[rand].transform;
-        NetworkTransform nt = GetComponent<NetworkTransform>();
-        nt.Teleport(newPos.position, newPos.rotation, newPos.localScale);   
-    }
-
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
@@ -212,7 +202,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
 
     public void MoveAction(InputAction.CallbackContext context) 
     {
-        if (!IsLocalPlayer || !IsOwner) { return; }
+        if (!IsLocalPlayer) { return; }
         if (context.performed)
         {
             _rawMovementInput = context.ReadValue<Vector2>();
@@ -235,42 +225,14 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     {
         if (!IsLocalPlayer) { return; }
 
-        if (context.started)
-        {
-            TryInteract();
-        }
-    }
-    private void TryInteract() 
-    {
-        if (_targetInteractible != null)//we can change this later if we need to
+        if (context.started && _targetInteractible != null)
         {
             _targetInteractible.InteractAction(this.gameObject);
-            _targetInteractible = null;
-            return;
         }
-
-        Collider[] hitColliders = Physics.OverlapSphere(interactOrigin.position, interactRadius);
-        foreach (Collider hitCollider in hitColliders)
-        {
-            IinteractionInterface hitInteractionInterface = hitCollider.gameObject.GetComponent<IinteractionInterface>();
-            if (hitInteractionInterface != null && hitInteractionInterface.ShouldInteract(this.gameObject))
-            {
-                _targetInteractible = hitInteractionInterface;
-                hitInteractionInterface.InteractAction(this.gameObject);
-                return;
-            }
-        }
-        _targetInteractible = null;///If nothing is interactible, clear just in case
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref moveSpeed);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(interactOrigin.position, interactRadius);
     }
 }
