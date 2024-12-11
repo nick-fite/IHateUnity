@@ -1,11 +1,65 @@
+using System;
 using Unity.Cinemachine;
 using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Scripting.APIUpdating;
 
-public class PlayerNetworkMovement : MultiplayerActor
+public class HandleStates
 {
+    public class InputState
+    {
+        public int tick;
+        public Vector2 moveInput;
+        public float MoveSpeed;
+    }
+
+    [System.Serializable]
+    public class TransformStateRW : INetworkSerializable, IEquatable<HandleStates.TransformStateRW>
+    {
+        public int tick;
+        public Vector3 finalPos;
+        public Quaternion finalRot;
+        public float moveSpeed;
+        public bool isMoving;
+
+        public bool Equals(TransformStateRW other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T: IReaderWriter
+        {
+            /*serializer.SerializeValue(ref tick);
+            serializer.SerializeValue(ref finalPos);
+            serializer.SerializeValue(ref finalRot);
+            serializer.SerializeValue(ref moveSpeed);
+            serializer.SerializeValue(ref isMoving);*/
+            if(serializer.IsReader)
+            {
+                FastBufferReader reader = serializer.GetFastBufferReader();
+                reader.ReadValueSafe(out tick);
+                reader.ReadValueSafe(out finalPos);
+                reader.ReadValueSafe(out finalRot);
+                reader.ReadValueSafe(out moveSpeed);
+                reader.ReadValueSafe(out isMoving);
+            }
+            else
+            {
+                FastBufferWriter writer = serializer.GetFastBufferWriter();
+                writer.WriteValueSafe(tick);
+                writer.WriteValueSafe(finalPos);
+                writer.WriteValueSafe(finalRot);
+                writer.WriteValueSafe(moveSpeed);
+                writer.WriteValueSafe(isMoving);
+            }
+        }
+    }
+}
+
+public class PlayerNetworkMovement : NetworkBehaviour
+{
+    CharacterController charController;
     bool _bCanMove;
     [SerializeField] private CinemachineCamera _VCam;
     [SerializeField] private Camera _cam;
@@ -13,6 +67,113 @@ public class PlayerNetworkMovement : MultiplayerActor
     [SerializeField] float _turnSmoothTime;
     [SerializeField] Animator _animator;
     [SerializeField] float _gravity;
+
+    private int tick = 0; 
+    private float tickRate = 1/60f;
+    private float tickDeltaTime = 0;
+
+    private const int buffer = 1024;
+
+    private HandleStates.InputState[] _inputStates = new HandleStates.InputState[buffer];
+    private HandleStates.TransformStateRW[] _transformStates = new HandleStates.TransformStateRW[buffer];
+    public NetworkVariable<HandleStates.TransformStateRW> currentServerTransformState = new NetworkVariable<HandleStates.TransformStateRW>(
+        new HandleStates.TransformStateRW{}
+    );
+    public HandleStates.TransformStateRW previousServerTransformState;
+
+    private void Awake()
+    {
+        charController = GetComponent<CharacterController>();
+    }
+
+    private void OnServerStateChanged(HandleStates.TransformStateRW previousValue, HandleStates.TransformStateRW newValue)
+    {
+        previousServerTransformState = previousValue;
+    }
+
+    private void OnEnable()
+    {
+        currentServerTransformState.OnValueChanged += OnServerStateChanged;
+    }
+
+    public void ProcessLocalPlayerMovement(Vector2 rawInput, float moveSpeed)
+    {
+        tickDeltaTime += Time.deltaTime;
+        if(tickDeltaTime > tickRate)
+        {
+            int bufferIndex = tick & buffer;
+
+            MovePlayerWithServerTickServerRpc(tick, rawInput, moveSpeed);
+            MovePlayer(rawInput, moveSpeed);
+            
+            HandleStates.InputState inputState = new()
+            {
+                tick = tick,
+                moveInput = rawInput,
+                MoveSpeed = moveSpeed
+            };
+
+            HandleStates.TransformStateRW transformState = new()
+            {
+                tick = tick,
+                finalPos = transform.position,
+                finalRot = transform.rotation,
+                isMoving = true
+            };
+
+            _inputStates[bufferIndex] = inputState;
+            _transformStates[bufferIndex] = transformState;
+
+            tickDeltaTime -= tickRate;
+            if(tick == buffer)
+            {
+                tick = 0;
+            }
+            else
+            {
+                tick++;
+            }
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void MovePlayerWithServerTickServerRpc(int _tick, Vector2 rawInput, float moveSpeed)
+    {
+        MovePlayer(rawInput, moveSpeed);
+        HandleStates.TransformStateRW transformState = new()
+        {
+            tick = _tick,
+            finalPos = transform.position,
+            finalRot = transform.rotation,
+            isMoving = true
+        };
+        previousServerTransformState = currentServerTransformState.Value;
+        currentServerTransformState.Value = transformState;
+    }
+
+    public void SimulateOtherPlayers()
+    {
+        tickDeltaTime += Time.deltaTime;
+
+        if(tickDeltaTime > tickRate)
+        {
+            if(currentServerTransformState.Value.isMoving)
+            {
+                transform.position = currentServerTransformState.Value.finalPos;
+                transform.rotation = currentServerTransformState.Value.finalRot;
+            }
+
+            tickDeltaTime -= tickRate;
+            if(tick == buffer)
+            {
+                tick = 0;
+            }
+            else
+            {
+                tick++;
+            }
+        }
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -26,7 +187,9 @@ public class PlayerNetworkMovement : MultiplayerActor
 
         float rotAngle = GetRotationAngle(targetAngle);
         
-        if(IsServer && IsLocalPlayer)
+        Move(targetAngle, rotAngle, moveSpeed);
+        ApplyGravity();
+        /*if(IsServer && IsLocalPlayer)
         {
             if(rawInput != Vector2.zero){
                 Move(targetAngle, rotAngle, moveSpeed);
@@ -49,7 +212,7 @@ public class PlayerNetworkMovement : MultiplayerActor
                 ControlWalkingAnimationServerRpc(false);
             }
         }
-        ParseGravity();
+        ParseGravity();*/
     }
 
     [Rpc(SendTo.Server)]
@@ -65,7 +228,7 @@ public class PlayerNetworkMovement : MultiplayerActor
 
         Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
         
-        charController.Move(moveDir.normalized * (moveSpeed * Time.fixedDeltaTime));
+        charController.Move(moveDir.normalized * (moveSpeed * tickRate));
     }
 
     private float GetTargetAngle(Vector2 rawInput)
@@ -108,7 +271,7 @@ public class PlayerNetworkMovement : MultiplayerActor
             return;
         }
 
-        charController.Move(Physics.gravity * Time.fixedDeltaTime);
+        charController.Move(Physics.gravity * tickRate);
     }
 
     [Rpc(SendTo.Server)]
