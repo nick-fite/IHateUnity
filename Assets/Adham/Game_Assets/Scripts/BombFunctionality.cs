@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 
@@ -18,10 +19,10 @@ public class BombFunctionality : DamageComponent
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.LogWarning("Exploding");
-        if (!isExploding && other.GetComponent<HealthComponent>() != null)
+        if (!isExploding && other.GetComponentInParent<HealthComponent>() != null)
         {
-            Debug.Log($"{other.gameObject.name} touched the bomb, starting countdown!");
+
+            Debug.LogWarning($"{other.gameObject.name} touched the bomb, starting countdown!");
             StartCoroutine(BombCountdown());
         }
     }
@@ -29,8 +30,22 @@ public class BombFunctionality : DamageComponent
     private IEnumerator BombCountdown()
     {
         isExploding = true;  
-        yield return new WaitForSeconds(countdownTime);  
-        Explode();  
+        yield return new WaitForSeconds(countdownTime);
+        if(IsClient && IsLocalPlayer)
+        {
+            ExplodeServerRpc();
+        } 
+        else if(IsServer && IsLocalPlayer)
+        {
+
+            Explode();  
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void ExplodeServerRpc()
+    {
+        Explode();
     }
 
     private void Explode()
@@ -42,7 +57,8 @@ public class BombFunctionality : DamageComponent
         foreach (var hitCollider in hitColliders)
         {
             GameObject target = hitCollider.gameObject;
-            HealthComponent healthComponent = target.GetComponent<HealthComponent>();
+            Debug.LogWarning(target.name);
+            HealthComponent healthComponent = target.GetComponentInParent<HealthComponent>();
 
             if (healthComponent != null)
             {
@@ -56,7 +72,7 @@ public class BombFunctionality : DamageComponent
 
     private void ApplyDamageToHealth(GameObject target, float damageAmount)
     {
-        HealthComponent healthComponent = target.GetComponent<HealthComponent>();
+        HealthComponent healthComponent = target.transform.parent.GetComponent<HealthComponent>();
         if (healthComponent != null)
         {
             healthComponent.ChangeHealth(-damageAmount);  
