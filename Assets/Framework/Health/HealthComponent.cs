@@ -52,11 +52,9 @@ public class HealthComponent : NetworkBehaviour
 
     public void ChangeHealth(float amt)
     {
+        _health.Value = Mathf.Clamp(_health.Value + amt, 0, maxHealth);
         if (_health.Value == 0)
             return;
-        Debug.Log("Before clamp");
-        _health.Value = Mathf.Clamp(_health.Value + amt, 0, maxHealth);
-        Debug.Log("After clamp");
         if (amt < 0)
         {
             OnTakenDamage?.Invoke(_health.Value, amt, maxHealth);//not used right now
