@@ -7,7 +7,7 @@ using UnityEngine;
 public class ThrowComponent : NetworkBehaviour
 {
     [SerializeField] private Transform holdingPositionTransform;
-    private GameObject heldObject;
+    private GameObject _heldObject;
 
     [SerializeField] private float holdSpeed = 2f;
     private NetworkVariable<bool> _bIsHolding = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -17,7 +17,7 @@ public class ThrowComponent : NetworkBehaviour
     public void SetIsHolding(bool stateToSet) { _bIsHolding.Value = stateToSet; }
     public void SetHeldObject(GameObject heldObjToSet) 
     {
-        heldObject = heldObjToSet; 
+        _heldObject = heldObjToSet; 
     }
 
     public void ClearHeldObject() 
@@ -36,7 +36,7 @@ public class ThrowComponent : NetworkBehaviour
     }
     private void ClearHeldObjectAction() 
     {
-        heldObject = null;
+        _heldObject = null;
     }
 
     public bool IsHeldPosition()
@@ -62,11 +62,11 @@ public class ThrowComponent : NetworkBehaviour
         }
         if (IsServer) 
         {
-            HoldObject(heldObject);
+            HoldObject(_heldObject);
         }
         else if (IsClient)
         {
-            HoldObjectServerRpc(heldObject);
+            HoldObjectServerRpc(_heldObject);
         }
     }
 
@@ -82,25 +82,25 @@ public class ThrowComponent : NetworkBehaviour
     }
     private void HoldObject(NetworkObjectReference heldObjRef)
     {
-        if (heldObject == null)
+        if (_heldObject == null)
         { 
             heldObjRef.TryGet(out NetworkObject pickupNetwork);
             if (pickupNetwork != null)
             {
                 Debug.Log($"Have network object though :)");
-                heldObject = pickupNetwork.gameObject;
+                _heldObject = pickupNetwork.gameObject;
             }
         }
 
-        if (holdingPositionTransform && heldObject)
+        if (holdingPositionTransform && _heldObject)
         {
-            Debug.Log($"current held obj: {heldObject.gameObject.name}, newPos: {holdingPositionTransform}, HoldSpeed: {holdSpeed}");
+            Debug.Log($"current held obj: {_heldObject.gameObject.name}, newPos: {holdingPositionTransform}, HoldSpeed: {holdSpeed}");
             Debug.Log($"slerp");
 
 
 
-            heldObject.transform.position = holdingPositionTransform.position;
-            heldObject.transform.rotation = holdingPositionTransform.rotation;
+            _heldObject.transform.position = holdingPositionTransform.position;
+            _heldObject.transform.rotation = holdingPositionTransform.rotation;
         }
     }
 

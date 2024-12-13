@@ -29,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1285460984628804661}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40466064, y: -0.2442808, z: 0.11310851, w: 0.8739469}
-  m_LocalPosition: {x: 1.7130492, y: 4.561714, z: -3.0352132}
+  m_LocalRotation: {x: 0.16859283, y: -0.6648948, z: 0.15780592, w: 0.7103441}
+  m_LocalPosition: {x: 4.0061226, y: 2.6993303, z: -0.48650458}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -113,7 +113,7 @@ MonoBehaviour:
     SplineCurvature: 0.5
   RecenteringTarget: 2
   HorizontalAxis:
-    Value: -31.232891
+    Value: -86.21432
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -123,7 +123,7 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 30.680628
+    Value: 15.443826
     Center: 17.5
     Range: {x: -10, y: 45}
     Wrap: 0
@@ -304,8 +304,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4275610020041591817}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40466064, y: -0.2442808, z: 0.11310851, w: 0.8739469}
-  m_LocalPosition: {x: 1.7130492, y: 4.561714, z: -3.0352132}
+  m_LocalRotation: {x: 0.16859283, y: -0.6648948, z: 0.15780592, w: 0.7103441}
+  m_LocalPosition: {x: 4.0061226, y: 2.6993303, z: -0.48650458}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -628,16 +628,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  charController: {fileID: 0}
   _playerObj: {fileID: 803167828191313357}
+  playerMovementOnStartDelay: 5.5
   moveSpeed: 3
   turnSpeed: 2
   playerNetworkMovement: {fileID: 684129827861290299}
   attackRadius: 1
   interactRadius: 1
   interactOrigin: {fileID: 7157019367758677870}
-  _VCam: {fileID: 3768624964401596184}
-  _listener: {fileID: 2316586491175113226}
+  virtualCam: {fileID: 3768624964401596184}
+  audioListener: {fileID: 2316586491175113226}
 --- !u!54 &2189371062612846002
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -679,7 +679,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   widgetPrefab: {fileID: 3090276310191325794, guid: cfb2c9b53ca50674fb0262d49d110680, type: 3}
   attachTransform: {fileID: 6737300403739161067}
-  _mainCamera: {fileID: 9149270920810735871}
+  mainCamera: {fileID: 9149270920810735871}
 --- !u!114 &6219689259929916564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1139,13 +1139,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  charController: {fileID: 4743708031327793318}
-  _VCam: {fileID: 3768624964401596184}
-  _cam: {fileID: 9149270920810735871}
-  _turnSmoothVelocity: 0
-  _turnSmoothTime: 0
-  _animator: {fileID: 6237081527093624077}
-  _gravity: 0
+  virtualFreelookCamera: {fileID: 3768624964401596184}
+  playerCamera: {fileID: 9149270920810735871}
 --- !u!114 &3971063859872020368
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,7 +3,7 @@ using Unity.Netcode;
 
 public class MultiplayerActor : MultiplayerObject
 {
-    [SerializeField] protected CharacterController charController;
+    protected CharacterController charController;
 
     private void Awake()
     {

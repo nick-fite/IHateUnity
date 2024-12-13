@@ -5,7 +5,7 @@ public class WidgetComponent : MonoBehaviour
 {
     [SerializeField] private Widget widgetPrefab;
     [SerializeField] private Transform attachTransform;
-    [SerializeField] private Camera _mainCamera;
+    [SerializeField] private Camera mainCamera;
 
     private Widget _widget;
     private void Awake()
@@ -22,9 +22,9 @@ public class WidgetComponent : MonoBehaviour
 
     private void Update()
     {
-        if (_widget && attachTransform && _mainCamera)
+        if (_widget && attachTransform && mainCamera)
         {
-            _widget.transform.position = _mainCamera.WorldToScreenPoint(attachTransform.position);
+            _widget.transform.position = mainCamera.WorldToScreenPoint(attachTransform.position);
         }
     }
 }

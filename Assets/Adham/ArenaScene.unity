@@ -3519,6 +3519,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1112251657}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &358926638
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 358926640}
+  - component: {fileID: 358926639}
+  m_Layer: 0
+  m_Name: ScriptHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &358926639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358926638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 041b32a11db9bb245ae2890e151b688d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startupCanvas: {fileID: 72050738}
+  mainMenu: {fileID: 1136855385}
+  guidanceMenu: {fileID: 1291068982}
+--- !u!4 &358926640
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358926638}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &362877262
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6143,7 +6190,7 @@ GameObject:
   - component: {fileID: 595885866}
   - component: {fileID: 595885865}
   m_Layer: 5
-  m_Name: Button
+  m_Name: StartButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6213,7 +6260,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068479172}
+      - m_Target: {fileID: 358926639}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: StartButtonClicked
         m_Mode: 1
@@ -6844,7 +6891,7 @@ GameObject:
   - component: {fileID: 669776805}
   - component: {fileID: 669776804}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6914,7 +6961,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068479172}
+      - m_Target: {fileID: 358926639}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: BackButtonClicked
         m_Mode: 1
@@ -10109,7 +10156,6 @@ GameObject:
   - component: {fileID: 1068479166}
   - component: {fileID: 1068479171}
   - component: {fileID: 1068479170}
-  - component: {fileID: 1068479172}
   m_Layer: 0
   m_Name: KillBOX
   m_TagString: Untagged
@@ -10275,21 +10321,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 110
   m_CollisionDetection: 0
---- !u!114 &1068479172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1068479164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 041b32a11db9bb245ae2890e151b688d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartupCanvas: {fileID: 72050738}
-  mainMenu: {fileID: 1136855385}
-  guidanceMenu: {fileID: 1291068982}
 --- !u!1 &1112251656
 GameObject:
   m_ObjectHideFlags: 0
@@ -11823,7 +11854,7 @@ GameObject:
   - component: {fileID: 1268032673}
   - component: {fileID: 1268032672}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: GuideButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11893,7 +11924,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1068479172}
+      - m_Target: {fileID: 358926639}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: GuideButtonClicked
         m_Mode: 1
@@ -19760,6 +19791,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 554164140}
+  - {fileID: 358926640}
   - {fileID: 1262849032}
   - {fileID: 515704406}
   - {fileID: 1068479165}

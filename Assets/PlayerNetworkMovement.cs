@@ -7,17 +7,18 @@ using UnityEngine.Scripting.APIUpdating;
 public class PlayerNetworkMovement : MultiplayerActor
 {
     bool _bCanMove;
-    [SerializeField] private CinemachineCamera _VCam;
-    [SerializeField] private Camera _cam;
-    [SerializeField] float _turnSmoothVelocity;
-    [SerializeField] float _turnSmoothTime;
-    [SerializeField] Animator _animator;
-    [SerializeField] float _gravity;
+    [SerializeField] private CinemachineCamera virtualFreelookCamera;
+    [SerializeField] private Camera playerCamera;
+    float _turnSmoothVelocity;
+    float _turnSmoothTime;
+    Animator _animator;
+
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         _bCanMove = true;
+        _animator = GetComponent<Animator>();
     }
 
     public void MovePlayer(Vector2 rawInput, float moveSpeed)
@@ -73,7 +74,7 @@ public class PlayerNetworkMovement : MultiplayerActor
         float targetAngle = 0.0f;
         //Moving character
         Vector3 movementValue = new Vector3(rawInput.x, 0, rawInput.y).normalized;
-        targetAngle = Mathf.Atan2(movementValue.x, movementValue.z) * Mathf.Rad2Deg + _cam.transform.eulerAngles.y;
+        targetAngle = Mathf.Atan2(movementValue.x, movementValue.z) * Mathf.Rad2Deg + playerCamera.transform.eulerAngles.y;
 
         return targetAngle;
     }

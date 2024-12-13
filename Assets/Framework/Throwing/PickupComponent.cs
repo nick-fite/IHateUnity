@@ -14,7 +14,7 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
     Rigidbody _rigidBody;
     LaunchComponent _launchComponent;
     private bool _bIsPickedUp;
-    private Collider _col;
+    private Collider _collider;
 
     private void Start()
     {
@@ -23,7 +23,7 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
         _characterController = GetComponent<CharacterController>();
         _launchComponent = GetComponent<LaunchComponent>();
         _rigidBody = GetComponent<Rigidbody>();
-        _col = GetComponent<Collider>();
+        _collider = GetComponent<Collider>();
     }
     public bool ShouldInteract(GameObject interactor)
     {
@@ -68,7 +68,6 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
         throwComp.SetHeldObject(this.gameObject);
         ToggleRigidBodyServerRpc();
         throwComp.SetIsHolding(true);
-        SetPickUpPlayerMoveability(false);
     }
 
     protected virtual void ReleaseAction(ThrowComponent throwComp) 
@@ -81,28 +80,15 @@ public class PickupComponent : NetworkBehaviour, IinteractionInterface
         throwComp.SetIsHolding(false);
         throwComp.ClearHeldObject();
         ToggleRigidBodyServerRpc();
-        SetPickUpPlayerMoveability(true);
         if (_launchComponent && throwComp.IsLocalPlayer)
         {
             _rigidBody.isKinematic = false;
-            _col.isTrigger = false;
+            _collider.isTrigger = false;
             PlayerNetwork player = throwComp.GetComponent<PlayerNetwork>();
 
             Vector3 throwDir = player.GetPlayerForward() + player.GetPlayerUp();
             Debug.Log("launch in pickup");
             _launchComponent.CheckLaunch(throwDir, throwComp.GetThrowVelocity(), throwComp);
-        }
-    }
-
-    private void SetPickUpPlayerMoveability(bool stateToSet) //WIP
-    {
-        if (_characterController)
-        {
-            _characterController.enabled = stateToSet;
-        }
-        if (_playerNetwork)
-        {
-            _playerNetwork.enabled = stateToSet;
         }
     }
 

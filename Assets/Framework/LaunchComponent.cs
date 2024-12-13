@@ -46,10 +46,6 @@ public class LaunchComponent : NetworkBehaviour
         {
             AddRigidBodyForce(velocity);
         }
-        if (_playerNetwork)//WIP (Remove this statement and the function inside completely if unused)
-        {
-            //_playerNetwork.SetPlayerVelocity(velocity);
-        }
     }
 
     private void AddRigidBodyForce(Vector3 velocity)

@@ -22,7 +22,6 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
 
     ///[Actions and Animator dependencies]
     Animator _animator;
-    PlayerInput _playerInput;
     private MultiplayerInputAction _multiplayerInputAction;
     private CharacterController _characterController;
     [SerializeField] private GameObject _playerObj;
@@ -32,15 +31,15 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     DamageComponent _damageComponent;
 
     [Header("Player Options")]
+    [SerializeField] private float playerMovementOnStartDelay = 5f;
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private float turnSpeed = 2f;
     Vector2 _rawMovementInput;
-    bool _bCanMove = true; //<-- if we want to lock the player movement at some point
+
+    private NetworkVariable<bool> _bCanMove = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] PlayerNetworkMovement playerNetworkMovement;
 
     private bool _bIsGrounded;
-    private float _gravity = -9.81f;
-    private Vector3 _playerVelocity;
 
     [Header("Interaction")]
     [SerializeField] float attackRadius = 1f;
@@ -49,8 +48,8 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
     private IinteractionInterface _targetInteractible;
 
     [Header("Camera")]
-    [SerializeField] private CinemachineCamera _VCam;
-    [SerializeField] private AudioListener _listener; 
+    [SerializeField] private CinemachineCamera virtualCam;
+    [SerializeField] private AudioListener audioListener; 
     
         private int _swordHash;
         private int _hookshotHash;
@@ -65,8 +64,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
 
         _multiplayerInputAction = new MultiplayerInputAction();
 
-        _playerInput = GetComponent<PlayerInput>();
-        _bCanMove = true;
+        _bCanMove.Value = false;
 
         _animator = GetComponentInChildren<Animator>();
         _damageComponent = GetComponent<DamageComponent>();
@@ -126,7 +124,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
 
     private void FixedUpdate()
     {
-        if (!_characterController) { return; }
+        if (!_characterController || !_bCanMove.Value) { return; }
         playerNetworkMovement.MovePlayer(_rawMovementInput, moveSpeed);
     }
     private void UpdateAllConnections()
@@ -152,12 +150,12 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
 
         if(IsOwner)
         {
-            _listener.enabled = true;
-            _VCam.Priority = 1;
+            audioListener.enabled = true;
+            virtualCam.Priority = 1;
         }
         else
         {
-            _VCam.Priority = 0;
+            virtualCam.Priority = 0;
         }
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -171,6 +169,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
 
     IEnumerator DelayThenMove()
     {
+        _bCanMove.Value = false;
         yield return new WaitForSeconds(5);
         ParseMoveToSpawnPos();
         if (IsLocalPlayer)
@@ -203,6 +202,7 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
         Transform newSpawn = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)].transform;
         _characterController.transform.position = newSpawn.position;
         _characterController.transform.rotation = newSpawn.rotation;
+        _bCanMove.Value = true;
     }
 
     public Vector3 GetPlayerUp()
@@ -257,23 +257,10 @@ public class PlayerNetwork : MultiplayerActor, ITeamInterface
             TryInteract();
         }
     }
-
-    [Rpc(SendTo.Server)]
-    private void TryInteractServerRpc()
-    {
-        TryInteract();
-    }
-
-    [Rpc(SendTo.Everyone)]
-    private void TryInteractEveryoneRpc()
-    {
-        TryInteract();
-    }
-
     private void TryInteract() 
     {
         _animator.SetTrigger(_pickUpHash);
-        if (_targetInteractible != null)//we can change this later if we need to
+        if (_targetInteractible != null)
         {
             _targetInteractible.InteractAction(this.gameObject);
             _targetInteractible = null;

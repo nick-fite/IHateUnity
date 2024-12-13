@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject StartupCanvas;
+    [SerializeField] private GameObject startupCanvas;
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject guidanceMenu;
 
     public void StartButtonClicked()
     {
-       StartupCanvas.SetActive(false);
+       startupCanvas.SetActive(false);
     }
 
     public void GuideButtonClicked()
